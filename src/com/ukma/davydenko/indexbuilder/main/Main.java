@@ -10,6 +10,9 @@ import com.ukma.davydenko.indexbuilder.entities.IndexEntry;
 import com.ukma.davydenko.indexbuilder.entities.MatrixEntry;
 import com.ukma.davydenko.indexbuilder.logic.IndexBuilder;
 import com.ukma.davydenko.indexbuilder.logic.QueryProcessor;
+import com.ukma.davydenko.indexbuilder.positional.PositionalEntry;
+import com.ukma.davydenko.indexbuilder.positional.PositionalIndexBuilder;
+import com.ukma.davydenko.indexbuilder.positional.PositionalIndexEntry;
 import com.ukma.davydenko.indexbuilder.twoword.TwoWordIndexEntry;
 import com.ukma.davydenko.indexbuilder.twoword.TwoWordEntry;
 import com.ukma.davydenko.indexbuilder.twoword.TwoWordIndexBuilder;
@@ -67,11 +70,22 @@ public class Main {
 		
 		////////////////////// TWO WORD INDEX ///////////////////////
 		List<TwoWordEntry> twEntries = TwoWordIndexBuilder.processEntries(folderName);
-		System.out.println(twEntries);
+		//System.out.println(twEntries);
 		
 		List<TwoWordIndexEntry> twIndex = TwoWordIndexBuilder.buildIndex(twEntries);
-		for (TwoWordIndexEntry twIndexEntry : twIndex) {
-			System.out.println(twIndexEntry);
+//		for (TwoWordIndexEntry twIndexEntry : twIndex) {
+//			System.out.println(twIndexEntry);
+//		}
+		
+		///////////////////// POSITIONAL INDEX //////////////////////
+		List<PositionalEntry> posEntries = PositionalIndexBuilder.processEntries(folderName);
+		for (PositionalEntry posEntry : posEntries) {
+			System.out.println(posEntry);
+		}
+		
+		List<PositionalIndexEntry> posIndex = PositionalIndexBuilder.buildIndex(posEntries);
+		for (PositionalIndexEntry posIndexEntry : posIndex) {
+			System.out.println(posIndexEntry);
 		}
 		
 		/////////////////////////////////////////////////////////////
