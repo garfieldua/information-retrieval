@@ -1,8 +1,11 @@
 package com.ukma.davydenko.indexbuilder.positional;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class PositionalIndexPositions {
+public class PositionalIndexPositions implements Serializable {
+	private static final long serialVersionUID = -6283499394761061595L;
+	
 	private int docID;
 	private List<Integer> positions;
 	

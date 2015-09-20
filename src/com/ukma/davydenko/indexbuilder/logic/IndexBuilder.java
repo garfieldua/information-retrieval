@@ -4,12 +4,10 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -20,6 +18,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.ukma.davydenko.utils.Consts;
+import com.ukma.davydenko.utils.Utils;
 import com.ukma.davydenko.indexbuilder.data.MyArray;
 import com.ukma.davydenko.indexbuilder.entities.Entry;
 import com.ukma.davydenko.indexbuilder.entities.IndexEntry;
@@ -170,29 +169,15 @@ public class IndexBuilder {
 	}
 	
 	public static void serializeMatrixToFile(MyArray<MatrixEntry> matrix, String fileName) {
-		serializer(matrix, fileName);
+		Utils.serializer(matrix, fileName);
 	}
 	
 	public static void serializeIndexToFile(MyArray<IndexEntry> index, String fileName) {
-		serializer(index, fileName);
+		Utils.serializer(index, fileName);
 	}
 	
 	public static void serializeIndexToFile(Map<String, TreeSet<Integer>> index, String fileName) {
-		serializer(index, fileName);
-	}
-	
-	private static void serializer(Object obj, String fileName) {
-		try {
-			FileOutputStream fileOut = new FileOutputStream(fileName);
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			
-			out.writeObject(obj);
-			
-			out.close();
-	        fileOut.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Utils.serializer(index, fileName);
 	}
 	
 	public static void writeIndexToFile(MyArray<IndexEntry> index, String fileName) {

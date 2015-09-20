@@ -13,6 +13,7 @@ import com.ukma.davydenko.indexbuilder.logic.QueryProcessor;
 import com.ukma.davydenko.indexbuilder.positional.PositionalEntry;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexBuilder;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexEntry;
+import com.ukma.davydenko.indexbuilder.positional.PositionalIndexSearch;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexEntry;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordEntry;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexBuilder;
@@ -78,8 +79,8 @@ public class Main {
 //			System.out.println(twIndexEntry);
 //		}
 		
-		BiwordIndexSearch twSearch = new BiwordIndexSearch(twIndex, folderName);
-		twSearch.startTwoIndexSearch();
+		BiwordIndexSearch twSearch = new BiwordIndexSearch(twIndex);
+//		twSearch.startTwoIndexSearch();
 		// works great!
 		//System.out.println();
 		//System.out.println(twSearch.binarySearch("you", "you"));
@@ -91,9 +92,14 @@ public class Main {
 //		}
 		
 		List<PositionalIndexEntry> posIndex = PositionalIndexBuilder.buildIndex(posEntries);
+		//PositionalIndexBuilder.serialize(posIndex, "posindex.ser");
 //		for (PositionalIndexEntry posIndexEntry : posIndex) {
 //			System.out.println(posIndexEntry);
 //		}
+		
+		PositionalIndexSearch posSearch = new PositionalIndexSearch(posIndex);
+		posSearch.startPosIndexSearch();
+//		twSearch.startTwoIndexSearch();
 		
 		/////////////////////////////////////////////////////////////
 //		QueryProcessor qp = new QueryProcessor(index, folderName);

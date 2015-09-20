@@ -9,10 +9,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import com.ukma.davydenko.utils.Consts;
+import com.ukma.davydenko.utils.Utils;
 
 public class PositionalIndexBuilder {
 	public static List<PositionalEntry> processEntries(String pathName) {
@@ -28,7 +27,6 @@ public class PositionalIndexBuilder {
 			    	try {
 			    		BufferedReader br = new BufferedReader(new FileReader(filePath.toString()));
 			    		String currentLine;
-			    		String prevWord = null;
 			    		
 			    		while ((currentLine = br.readLine()) != null) {
 							String[] words = currentLine.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegex);
@@ -102,5 +100,9 @@ public class PositionalIndexBuilder {
 		index.add(new PositionalIndexEntry(lastTerm, postingsList.size(), postingsList));
 		
 		return index;
+	}
+	
+	public static void serialize(List<PositionalIndexEntry> index, String fileName) {
+		Utils.serializer(index, fileName);
 	}
 }

@@ -1,10 +1,11 @@
 package com.ukma.davydenko.indexbuilder.positional;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
-public class PositionalIndexEntry {
+public class PositionalIndexEntry implements Serializable {
+	private static final long serialVersionUID = -399205775915356561L;
+	
 	private String term;
 	private int frequency;
 	//private Map<Integer, ArrayList<Integer>> postingsList;

@@ -1,40 +1,17 @@
 package com.ukma.davydenko.indexbuilder.twoword;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import com.ukma.davydenko.utils.Consts;
 
 public class BiwordIndexSearch {
-	private List<Integer> allDocIDs;
 	private List<BiwordIndexEntry> index;
 	
-	public BiwordIndexSearch(List<BiwordIndexEntry> index, String folder) {
+	public BiwordIndexSearch(List<BiwordIndexEntry> index) {
 		this.index = index;
-		this.allDocIDs = new ArrayList<>();
-		
-		try {
-			Files.walk(Paths.get(new File(folder).getAbsolutePath())).forEach(filePath -> {
-			    if (Files.isRegularFile(filePath)) {
-			    	int docID = Integer.parseInt(filePath.getFileName().toString().replaceFirst("[.][^.]+$", ""));
-			    	allDocIDs.add(docID);
-			    }
-			});
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		Collections.sort(allDocIDs);
 	}
 	
 	public int binarySearch(String term1, String term2) {
