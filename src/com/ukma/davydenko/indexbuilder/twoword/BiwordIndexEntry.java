@@ -3,7 +3,7 @@ package com.ukma.davydenko.indexbuilder.twoword;
 import java.io.Serializable;
 import java.util.List;
 
-public class TwoWordIndexEntry implements Serializable, Comparable<TwoWordIndexEntry> {
+public class BiwordIndexEntry implements Serializable, Comparable<BiwordIndexEntry> {
 	private static final long serialVersionUID = -8858691814389944141L;
 	
 	private String term1;
@@ -11,7 +11,7 @@ public class TwoWordIndexEntry implements Serializable, Comparable<TwoWordIndexE
 	private int frequency;
 	private List<Integer> postingsList;
 	
-	public TwoWordIndexEntry(String term1, String term2, int frequency, List<Integer> postingsList) {
+	public BiwordIndexEntry(String term1, String term2, int frequency, List<Integer> postingsList) {
 		super();
 		this.setTerm1(term1);
 		this.setTerm2(term2);
@@ -52,7 +52,7 @@ public class TwoWordIndexEntry implements Serializable, Comparable<TwoWordIndexE
 	}
 	
 	@Override
-	public int compareTo(TwoWordIndexEntry o) {
+	public int compareTo(BiwordIndexEntry o) {
 		int i = term1.compareTo(o.term1);
 	    if (i != 0) return i;
 

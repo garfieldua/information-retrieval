@@ -13,10 +13,10 @@ import com.ukma.davydenko.indexbuilder.logic.QueryProcessor;
 import com.ukma.davydenko.indexbuilder.positional.PositionalEntry;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexBuilder;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexEntry;
-import com.ukma.davydenko.indexbuilder.twoword.TwoWordIndexEntry;
-import com.ukma.davydenko.indexbuilder.twoword.TwoWordEntry;
-import com.ukma.davydenko.indexbuilder.twoword.TwoWordIndexBuilder;
-import com.ukma.davydenko.indexbuilder.twoword.TwoWordIndexSearch;
+import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexEntry;
+import com.ukma.davydenko.indexbuilder.twoword.BiwordEntry;
+import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexBuilder;
+import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexSearch;
 
 public class Main {
 	
@@ -70,15 +70,15 @@ public class Main {
 		
 		
 		////////////////////// TWO WORD INDEX ///////////////////////
-		List<TwoWordEntry> twEntries = TwoWordIndexBuilder.processEntries(folderName);
+		List<BiwordEntry> twEntries = BiwordIndexBuilder.processEntries(folderName);
 		//System.out.println(twEntries);
 		
-		List<TwoWordIndexEntry> twIndex = TwoWordIndexBuilder.buildIndex(twEntries);
+		List<BiwordIndexEntry> twIndex = BiwordIndexBuilder.buildIndex(twEntries);
 //		for (TwoWordIndexEntry twIndexEntry : twIndex) {
 //			System.out.println(twIndexEntry);
 //		}
 		
-		TwoWordIndexSearch twSearch = new TwoWordIndexSearch(twIndex, folderName);
+		BiwordIndexSearch twSearch = new BiwordIndexSearch(twIndex, folderName);
 		twSearch.startTwoIndexSearch();
 		// works great!
 		//System.out.println();

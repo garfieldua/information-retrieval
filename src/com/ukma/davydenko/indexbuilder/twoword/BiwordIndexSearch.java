@@ -11,13 +11,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class TwoWordIndexSearch {
+public class BiwordIndexSearch {
 	private List<Integer> allDocIDs;
-	private List<TwoWordIndexEntry> index;
+	private List<BiwordIndexEntry> index;
 	
 	static String splitRegex = "[^a-zA-Z]+";
 	
-	public TwoWordIndexSearch(List<TwoWordIndexEntry> index, String folder) {
+	public BiwordIndexSearch(List<BiwordIndexEntry> index, String folder) {
 		this.index = index;
 		this.allDocIDs = new ArrayList<>();
 		

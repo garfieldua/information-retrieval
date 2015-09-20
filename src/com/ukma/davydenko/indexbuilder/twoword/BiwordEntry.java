@@ -1,11 +1,11 @@
 package com.ukma.davydenko.indexbuilder.twoword;
 
-public class TwoWordEntry implements Comparable<TwoWordEntry> {
+public class BiwordEntry implements Comparable<BiwordEntry> {
 	private String term1;
 	private String term2;
 	private int docID;
 	
-	public TwoWordEntry(String term1, String term2, int docID) {
+	public BiwordEntry(String term1, String term2, int docID) {
 		super();
 		this.setTerm1(term1);
 		this.setTerm2(term2);
@@ -37,7 +37,7 @@ public class TwoWordEntry implements Comparable<TwoWordEntry> {
 	}
 	
 	@Override
-	public int compareTo(TwoWordEntry o) {
+	public int compareTo(BiwordEntry o) {
 		int i = term1.compareTo(o.term1);
 	    if (i != 0) return i;
 

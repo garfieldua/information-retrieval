@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TwoWordIndexBuilder {
+public class BiwordIndexBuilder {
 	static String splitRegex = "[^a-zA-Z]+";
 	
-	public static List<TwoWordEntry> processEntries(String pathName) {
-		List<TwoWordEntry> entries = new ArrayList<>();
+	public static List<BiwordEntry> processEntries(String pathName) {
+		List<BiwordEntry> entries = new ArrayList<>();
 		
 		try {
 			Files.walk(Paths.get(new File(pathName).getAbsolutePath())).forEach(filePath -> {
@@ -33,7 +33,7 @@ public class TwoWordIndexBuilder {
 								if (i == 0) {
 									prevWord = words[i];
 								} else {
-									entries.add(new TwoWordEntry(prevWord, words[i], docID));
+									entries.add(new BiwordEntry(prevWord, words[i], docID));
 									prevWord = words[i];
 								}
 							}
@@ -56,8 +56,8 @@ public class TwoWordIndexBuilder {
 		return entries;
 	}
 	
-	public static List<TwoWordIndexEntry> buildIndex(List<TwoWordEntry> entries) {
-		List<TwoWordIndexEntry> index = new ArrayList<>();
+	public static List<BiwordIndexEntry> buildIndex(List<BiwordEntry> entries) {
+		List<BiwordIndexEntry> index = new ArrayList<>();
 
 		String lastTerm1 = entries.get(0).getTerm1();
 		String lastTerm2 = entries.get(0).getTerm2();
@@ -65,7 +65,7 @@ public class TwoWordIndexBuilder {
 		// need to create new post arr if lastTerm1 or lastTerm2 doesn't equal 
 		List<Integer> postArr = new ArrayList<>();
 		
-		for (TwoWordEntry twEntry : entries) {
+		for (BiwordEntry twEntry : entries) {
 			String currTerm1 = twEntry.getTerm1();
 			String currTerm2 = twEntry.getTerm2();
 			int currDoc = twEntry.getDocID();
@@ -76,7 +76,7 @@ public class TwoWordIndexBuilder {
 				}
 			} else {
 				// saving last processed word
-				index.add(new TwoWordIndexEntry(lastTerm1, lastTerm2, postArr.size(), postArr));
+				index.add(new BiwordIndexEntry(lastTerm1, lastTerm2, postArr.size(), postArr));
 				
 				// for new record
 				lastTerm1 = currTerm1;
@@ -88,7 +88,7 @@ public class TwoWordIndexBuilder {
 			
 		}
 		
-		index.add(new TwoWordIndexEntry(lastTerm1, lastTerm2, postArr.size(), postArr));
+		index.add(new BiwordIndexEntry(lastTerm1, lastTerm2, postArr.size(), postArr));
 		
 		return index;
 	}
