@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 
 import com.ukma.davydenko.indexbuilder.data.MyArray;
 import com.ukma.davydenko.indexbuilder.entities.IndexEntry;
+import com.ukma.davydenko.utils.Consts;
 
 public class QueryProcessor {
 	private MyArray<Integer> allDocIDs;
@@ -194,8 +195,8 @@ public class QueryProcessor {
 				String token = st.nextToken();
 				if (token.equals("&") || token.equals("|") || token.equals("u~")) {
 					applyOperator(token, stack);
-				} else {
-					stack.push(index.get(binarySearch(token.toLowerCase().replaceAll("\\p{Punct}", ""))).getPostingsList());
+				} else {	
+					stack.push(index.get(binarySearch(token.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement))).getPostingsList());
 				}
 			}
 			MyArray<Integer> result = stack.pop();

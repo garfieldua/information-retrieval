@@ -11,11 +11,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.ukma.davydenko.utils.Consts;
+
 public class BiwordIndexSearch {
 	private List<Integer> allDocIDs;
 	private List<BiwordIndexEntry> index;
-	
-	static String splitRegex = "[^a-zA-Z]+";
 	
 	public BiwordIndexSearch(List<BiwordIndexEntry> index, String folder) {
 		this.index = index;
@@ -95,7 +95,7 @@ public class BiwordIndexSearch {
 				if (input.equals("q")) {
 					quit = true;
 				} else {
-					String[] terms = input.toLowerCase().replaceAll("\\p{Punct}", "").split(splitRegex);
+					String[] terms = input.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegex);
 					
 					//System.out.println(Arrays.toString(terms));
 					

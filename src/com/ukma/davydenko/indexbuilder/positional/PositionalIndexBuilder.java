@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.ukma.davydenko.utils.Consts;
+
 public class PositionalIndexBuilder {
-	static String splitRegex = "[^a-zA-Z]+";
-	
 	public static List<PositionalEntry> processEntries(String pathName) {
 		List<PositionalEntry> entries = new ArrayList<>();
 		
@@ -31,7 +31,7 @@ public class PositionalIndexBuilder {
 			    		String prevWord = null;
 			    		
 			    		while ((currentLine = br.readLine()) != null) {
-							String[] words = currentLine.toLowerCase().replaceAll("\\p{Punct}", "").split(splitRegex);							
+							String[] words = currentLine.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegex);
 							
 							for (String word: words) {
 								++currPosition;

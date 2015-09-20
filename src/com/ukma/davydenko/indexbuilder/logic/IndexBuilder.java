@@ -19,24 +19,13 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.ukma.davydenko.utils.Consts;
 import com.ukma.davydenko.indexbuilder.data.MyArray;
 import com.ukma.davydenko.indexbuilder.entities.Entry;
 import com.ukma.davydenko.indexbuilder.entities.IndexEntry;
 import com.ukma.davydenko.indexbuilder.entities.MatrixEntry;
 
 public class IndexBuilder {
-	
-	/* Actually, there are several kinds of regex that we could use for splitting.
-	 * It really depends on which kind of language we use, how do we want to represent
-	 * our words in index (for example, word "they're" or "sugar-free" - with ' and -
-	 * or without).
-	 * Following regex allows only one or more entry of alphabetic symbols to be
-	 * present in index, before splitting by following regex we remove all punctuation
-	 * symbols with replaceAll("\\p{Punct}", "")
-	 */
-	
-	static String splitRegex = "[^a-zA-Z]+";
-	
 	public static MyArray<IndexEntry> buildIndex(MyArray<Entry> entries) {
 		MyArray<IndexEntry> index = new MyArray<>();
 		
@@ -81,7 +70,7 @@ public class IndexBuilder {
 			    		
 			    		while ((currentLine = br.readLine()) != null) {
 							
-							String[] words = currentLine.toLowerCase().replaceAll("\\p{Punct}", "").split(splitRegex);							
+							String[] words = currentLine.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegex);							
 							
 							for (String word: words) {
 								if (index.containsKey(word)) {
@@ -155,7 +144,7 @@ public class IndexBuilder {
 			    		String currentLine;
 			    		
 			    		while ((currentLine = br.readLine()) != null) {
-							String[] words = currentLine.toLowerCase().replaceAll("\\p{Punct}", "").split(splitRegex);							
+							String[] words = currentLine.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegex);
 							
 							for (String word: words) {
 								entries.add(new Entry(word, docID));

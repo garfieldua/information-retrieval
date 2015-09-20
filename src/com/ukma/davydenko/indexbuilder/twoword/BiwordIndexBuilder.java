@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.ukma.davydenko.utils.Consts;
+
 public class BiwordIndexBuilder {
-	static String splitRegex = "[^a-zA-Z]+";
-	
 	public static List<BiwordEntry> processEntries(String pathName) {
 		List<BiwordEntry> entries = new ArrayList<>();
 		
@@ -27,7 +27,7 @@ public class BiwordIndexBuilder {
 			    		String prevWord = null;
 			    		
 			    		while ((currentLine = br.readLine()) != null) {
-							String[] words = currentLine.toLowerCase().replaceAll("\\p{Punct}", "").split(splitRegex);							
+							String[] words = currentLine.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegex);							
 							
 							for (int i = 0; i < words.length; ++i) {
 								if (i == 0) {
