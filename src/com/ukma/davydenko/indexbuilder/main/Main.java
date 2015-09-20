@@ -16,10 +16,11 @@ import com.ukma.davydenko.indexbuilder.positional.PositionalIndexEntry;
 import com.ukma.davydenko.indexbuilder.twoword.TwoWordIndexEntry;
 import com.ukma.davydenko.indexbuilder.twoword.TwoWordEntry;
 import com.ukma.davydenko.indexbuilder.twoword.TwoWordIndexBuilder;
+import com.ukma.davydenko.indexbuilder.twoword.TwoWordIndexSearch;
 
 public class Main {
 	
-	private static String folderName = "test";
+	private static String folderName = "books";
 	
 	public static void main(String[] args) {
 		
@@ -77,16 +78,22 @@ public class Main {
 //			System.out.println(twIndexEntry);
 //		}
 		
+		TwoWordIndexSearch twSearch = new TwoWordIndexSearch(twIndex, folderName);
+		twSearch.startTwoIndexSearch();
+		// works great!
+		//System.out.println();
+		//System.out.println(twSearch.binarySearch("you", "you"));
+		
 		///////////////////// POSITIONAL INDEX //////////////////////
 		List<PositionalEntry> posEntries = PositionalIndexBuilder.processEntries(folderName);
-		for (PositionalEntry posEntry : posEntries) {
-			System.out.println(posEntry);
-		}
+//		for (PositionalEntry posEntry : posEntries) {
+//			System.out.println(posEntry);
+//		}
 		
 		List<PositionalIndexEntry> posIndex = PositionalIndexBuilder.buildIndex(posEntries);
-		for (PositionalIndexEntry posIndexEntry : posIndex) {
-			System.out.println(posIndexEntry);
-		}
+//		for (PositionalIndexEntry posIndexEntry : posIndex) {
+//			System.out.println(posIndexEntry);
+//		}
 		
 		/////////////////////////////////////////////////////////////
 //		QueryProcessor qp = new QueryProcessor(index, folderName);

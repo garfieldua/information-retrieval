@@ -59,7 +59,6 @@ public class PositionalIndexBuilder {
 	public static List<PositionalIndexEntry> buildIndex(List<PositionalEntry> entries) {
 		List<PositionalIndexEntry> index = new ArrayList<>();
 		
-		//Map<Integer, ArrayList<Integer>> postingsList = new TreeMap<Integer, ArrayList<Integer>>();
 		String lastTerm = entries.get(0).getTerm();
 		int lastDocID = entries.get(0).getDocID();
 		
@@ -96,7 +95,6 @@ public class PositionalIndexBuilder {
 				positions.add(position);
 				
 				postingsList = new ArrayList<>();
-				// ?????
 			}
 		}
 		
