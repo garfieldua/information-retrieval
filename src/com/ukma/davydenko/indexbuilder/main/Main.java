@@ -98,5 +98,7 @@ public class Main {
 		/////////////////////////////////////////////////////////////
 //		QueryProcessor qp = new QueryProcessor(index, folderName);
 //		qp.startQueryProcessor();
+		
+		// testing github from java
 	}
 }
