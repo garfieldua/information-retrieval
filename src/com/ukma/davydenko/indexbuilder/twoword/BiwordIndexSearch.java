@@ -67,6 +67,10 @@ public class BiwordIndexSearch {
 
 		do {
 			try {
+				System.out.println();
+				System.out.println("Type a biword query (number of words >=2)");
+				System.out.println("To quit, type 'q'");
+				
 				System.out.print(">");
 				input = in.readLine();
 				if (input.equals("q")) {

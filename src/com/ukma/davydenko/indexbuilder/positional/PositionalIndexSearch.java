@@ -115,7 +115,11 @@ public class PositionalIndexSearch {
 
 		do {
 			try {
-				
+				System.out.println();
+				System.out.println("Type a positional query. Following syntax is allowed:");
+				System.out.println("\tterm1 [number1] term2 ... [number n-1] term n");
+				System.out.println("\tterm1, term2 - words to search, number1 - distance between term1 and term2");
+				System.out.println("To quit, type 'q'");
 				
 				System.out.print(">");
 				input = in.readLine();

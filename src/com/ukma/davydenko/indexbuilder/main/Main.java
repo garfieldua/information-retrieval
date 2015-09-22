@@ -76,7 +76,7 @@ public class Main {
 		////////////////////// TWO WORD INDEX ///////////////////////
 //		List<BiwordEntry> twEntries = BiwordIndexBuilder.processEntries(folderName);
 //		List<BiwordIndexEntry> twIndex = BiwordIndexBuilder.buildIndex(twEntries);
-
+//
 //		BiwordIndexSearch twSearch = new BiwordIndexSearch(twIndex);
 //		twSearch.startTwoIndexSearch();
 		
