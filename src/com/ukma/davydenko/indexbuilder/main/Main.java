@@ -69,42 +69,23 @@ public class Main {
 //		MyArray<MatrixEntry> matrix = IndexBuilder.buildIncedenceMatrix(index, docids);
 //		IndexBuilder.serializeMatrixToFile(matrix, "matrix_arr.ser");
 		
-		
-		////////////////////// TWO WORD INDEX ///////////////////////
-		List<BiwordEntry> twEntries = BiwordIndexBuilder.processEntries(folderName);
-		//System.out.println(twEntries);
-		
-		List<BiwordIndexEntry> twIndex = BiwordIndexBuilder.buildIndex(twEntries);
-//		for (TwoWordIndexEntry twIndexEntry : twIndex) {
-//			System.out.println(twIndexEntry);
-//		}
-		
-		BiwordIndexSearch twSearch = new BiwordIndexSearch(twIndex);
-//		twSearch.startTwoIndexSearch();
-		// works great!
-		//System.out.println();
-		//System.out.println(twSearch.binarySearch("you", "you"));
-		
-		///////////////////// POSITIONAL INDEX //////////////////////
-		List<PositionalEntry> posEntries = PositionalIndexBuilder.processEntries(folderName);
-//		for (PositionalEntry posEntry : posEntries) {
-//			System.out.println(posEntry);
-//		}
-		
-		List<PositionalIndexEntry> posIndex = PositionalIndexBuilder.buildIndex(posEntries);
-		//PositionalIndexBuilder.serialize(posIndex, "posindex.ser");
-//		for (PositionalIndexEntry posIndexEntry : posIndex) {
-//			System.out.println(posIndexEntry);
-//		}
-		
-		PositionalIndexSearch posSearch = new PositionalIndexSearch(posIndex);
-		posSearch.startPosIndexSearch();
-//		twSearch.startTwoIndexSearch();
-		
 		/////////////////////////////////////////////////////////////
 //		QueryProcessor qp = new QueryProcessor(index, folderName);
 //		qp.startQueryProcessor();
 		
-		// testing github from java
+		////////////////////// TWO WORD INDEX ///////////////////////
+//		List<BiwordEntry> twEntries = BiwordIndexBuilder.processEntries(folderName);
+//		List<BiwordIndexEntry> twIndex = BiwordIndexBuilder.buildIndex(twEntries);
+
+//		BiwordIndexSearch twSearch = new BiwordIndexSearch(twIndex);
+//		twSearch.startTwoIndexSearch();
+		
+		///////////////////// POSITIONAL INDEX //////////////////////
+		List<PositionalEntry> posEntries = PositionalIndexBuilder.processEntries(folderName);
+		List<PositionalIndexEntry> posIndex = PositionalIndexBuilder.buildIndex(posEntries);
+		//PositionalIndexBuilder.serialize(posIndex, "posindex.ser");
+		
+		PositionalIndexSearch posSearch = new PositionalIndexSearch(posIndex);
+		posSearch.startPosIndexSearch();
 	}
 }

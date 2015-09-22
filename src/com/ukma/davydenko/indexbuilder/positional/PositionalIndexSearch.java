@@ -3,7 +3,6 @@ package com.ukma.davydenko.indexbuilder.positional;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.ukma.davydenko.utils.Consts;
@@ -52,7 +51,6 @@ public class PositionalIndexSearch {
 			return "PositionalIndexTriple [docID=" + docID + ", position1="
 					+ position1 + ", position2=" + position2 + "]";
 		}
-		
 	}
     
     public List<PositionalIndexTriple> posIntersect(List<PositionalIndexPositions> p1, List<PositionalIndexPositions> p2, int k) {
@@ -96,7 +94,6 @@ public class PositionalIndexSearch {
 					++m;
     				}
     			
-    			
     			++i;
     			++j;
     		}
@@ -111,8 +108,6 @@ public class PositionalIndexSearch {
     }
     
 	public void startPosIndexSearch() {
-		int k = 1;
-		
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
 		String input;
@@ -120,23 +115,52 @@ public class PositionalIndexSearch {
 
 		do {
 			try {
+				
+				
 				System.out.print(">");
 				input = in.readLine();
 				if (input.equals("q")) {
 					quit = true;
 				} else {
-					String[] terms = input.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegex);
+					String[] terms = input.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegexPos);
 
-					System.out.println(Arrays.toString(terms));
-					
-					//List<PositionalIndexTriple> resultList = posIntersect(index.get(binarySearch(terms[0])).getPostingsList(), index.get(binarySearch(terms[1])).getPostingsList(), k);
 					List<PositionalIndexTriple> resultList = new ArrayList<>();
-					for (int i = 0; i < terms.length-1; ++i) {
-						System.out.println(terms[i] + ' ' + terms[i+1]);
-						resultList = posIntersect(index.get(binarySearch(terms[i])).getPostingsList(), index.get(binarySearch(terms[i+1])).getPostingsList(), k);
-						for (PositionalIndexTriple res : resultList) {
-							System.out.println(res);
+					List<PositionalIndexPositions> currPosList = new ArrayList<>();
+					
+					int i = 0;
+					
+					while (i < terms.length-1) {
+						if (i == 0) {
+							resultList = posIntersect(index.get(binarySearch(terms[i])).getPostingsList(), index.get(binarySearch(terms[i+2])).getPostingsList(), Integer.parseInt(terms[i+1]));
+							
+						} else {
+							int currDocID = resultList.get(0).docID;
+							List<Integer> positions = new ArrayList<>();
+							
+							for (PositionalIndexTriple resTriple : resultList) {
+								if (currDocID == resTriple.docID) {
+									positions.add(resTriple.position2);
+								} else {
+									currPosList.add(new PositionalIndexPositions(currDocID, positions));
+									currDocID = resTriple.docID;
+									
+									positions = new ArrayList<>();
+									positions.add(resTriple.position2);
+								}
+							}
+							
+							currPosList.add(new PositionalIndexPositions(currDocID, positions));
+							
+							resultList = posIntersect(currPosList, index.get(binarySearch(terms[i+2])).getPostingsList(), Integer.parseInt(terms[i+1]));
+							currPosList = new ArrayList<>();
 						}
+												
+						i+=2;
+					}
+					
+					//System.out.println(resultList);
+					for (PositionalIndexTriple triple: resultList) {
+						System.out.println(triple.docID + " : " + triple.position2);
 					}
 				}
 			} catch (Exception e) {
