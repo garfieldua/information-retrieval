@@ -23,7 +23,49 @@ public class Main {
 	
 	private static String folderName = "books";
 	
+	public static MyArray<String> permuterm(String term) {
+		MyArray<String> result = new MyArray<>();
+		
+		String newTerm = term + "$";
+		
+		for (int i = 0; i < newTerm.length(); ++i) {
+			char firstChar = newTerm.charAt(0);
+			result.add(newTerm);
+			newTerm = newTerm.substring(1, newTerm.length()) + firstChar;
+		}
+		
+		System.out.println();
+		
+		return result;
+	}
+	
+	public static MyArray<String> createKGram(int k, String term) {
+		MyArray<String> result = new MyArray<>();
+		
+		String newTerm = "$" + term + "$";
+		
+		int curIndex = -1;
+		String gram = null;
+		
+		do {
+			gram = newTerm.substring(++curIndex, curIndex + k);
+			result.add(gram);
+		} while (curIndex + k < newTerm.length());
+		
+		return result;
+	}
+	
 	public static void main(String[] args) {
+		
+		MyArray<String> grams = createKGram(3, "castle");
+		for (int i = 0; i < grams.size(); ++i) {
+			System.out.println(grams.get(i));
+		}
+		
+		MyArray<String> permuterm = permuterm("hello");
+		for (int i = 0; i < grams.size(); ++i) {
+			System.out.println(permuterm.get(i));
+		}
 		
 		// ARRAY TO TXT PROCESSING
 //		long startTime = System.currentTimeMillis();
@@ -81,11 +123,11 @@ public class Main {
 //		twSearch.startTwoIndexSearch();
 		
 		///////////////////// POSITIONAL INDEX //////////////////////
-		List<PositionalEntry> posEntries = PositionalIndexBuilder.processEntries(folderName);
-		List<PositionalIndexEntry> posIndex = PositionalIndexBuilder.buildIndex(posEntries);
+//		List<PositionalEntry> posEntries = PositionalIndexBuilder.processEntries(folderName);
+//		List<PositionalIndexEntry> posIndex = PositionalIndexBuilder.buildIndex(posEntries);
 		//PositionalIndexBuilder.serialize(posIndex, "posindex.ser");
 		
-		PositionalIndexSearch posSearch = new PositionalIndexSearch(posIndex);
-		posSearch.startPosIndexSearch();
+//		PositionalIndexSearch posSearch = new PositionalIndexSearch(posIndex);
+//		posSearch.startPosIndexSearch();
 	}
 }
