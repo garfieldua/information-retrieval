@@ -95,9 +95,13 @@ public class TrigramIndexSearch {
 					quit = true;
 				} else {
 					if (input.contains("*")) {
+						String[] originalTerms = input.toLowerCase().replaceAll("(\\*)" + Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegexPos);
+						
 						input = "$" + input + "$";
+						
 						String[] terms = input.toLowerCase().replaceAll("(\\*\\$)" + Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegexGram);
 
+						System.out.println(Arrays.toString(originalTerms));
 						System.out.println(Arrays.toString(terms));
 						// decouple grams if needed
 						MyArray<String> degramedTerms = new MyArray<>();
@@ -116,20 +120,56 @@ public class TrigramIndexSearch {
 						MyArray<String> curTerms = new MyArray<>();
 						
 						int i = 0;
-						while (i < degramedTerms.size() - 1) {
-							if (i == 0) {
-								curTerms = getTermsIntersection(trigramIndex.get(binarySearch(degramedTerms.get(i))).getTerms(), trigramIndex.get(binarySearch(degramedTerms.get(i+1))).getTerms());
-							} else {
-								curTerms = getTermsIntersection(curTerms, trigramIndex.get(binarySearch(degramedTerms.get(i+1))).getTerms());
+						if (degramedTerms.size() == 1) {
+							curTerms = trigramIndex.get(binarySearch(degramedTerms.get(i))).getTerms();
+						} else {
+							while (i < degramedTerms.size() - 1) {
+								if (i == 0) {
+									curTerms = getTermsIntersection(trigramIndex.get(binarySearch(degramedTerms.get(i))).getTerms(), trigramIndex.get(binarySearch(degramedTerms.get(i+1))).getTerms());
+								} else {
+									curTerms = getTermsIntersection(curTerms, trigramIndex.get(binarySearch(degramedTerms.get(i+1))).getTerms());
+								}
+								
+								++i;
+							}
+						}
+						
+						// filtering false positive results
+						MyArray<String> filtered = new MyArray<>();
+						for (int j = 0; j < curTerms.size(); ++j) {
+							boolean flag = true;
+							for (int k = 0; k < originalTerms.length; ++k) {
+								// checking correctness of beginning of word
+								if (k == 0) {
+									//System.out.println(curTerms.get(j).substring(0, originalTerms[k].length()));
+									if (!curTerms.get(j).substring(0, originalTerms[k].length()).equals(originalTerms[k])) {
+										flag = false;
+									}
+								}
+								// checking correctness of ending of word
+								else if (k == originalTerms.length - 1) {
+									//System.out.println(curTerms.get(j).substring(curTerms.get(j).length()-originalTerms[k].length(), curTerms.get(j).length()));
+									if (!curTerms.get(j).substring(curTerms.get(j).length()-originalTerms[k].length(), curTerms.get(j).length()).equals(originalTerms[k])) {
+										flag = false;
+									}
+								}
+								// need to check containing of substring
+								else {
+									if (!curTerms.get(j).contains(originalTerms[k])) {
+										flag = false;
+									}
+								}
 							}
 							
-							++i;
+							if (flag == true) {
+								filtered.add(curTerms.get(j));
+							}
 						}
 						
 						// retrieving doc id's
 						QueryProcessor qp = new QueryProcessor(index, folderName);
-						for (int j = 0; j < curTerms.size(); ++j) {
-							System.out.println(curTerms.get(j) + " : " + qp.processQuery(curTerms.get(j)));
+						for (int j = 0; j < filtered.size(); ++j) {
+							System.out.println(filtered.get(j) + " : " + qp.processQuery(filtered.get(j)));
 						}
 					}
 					
