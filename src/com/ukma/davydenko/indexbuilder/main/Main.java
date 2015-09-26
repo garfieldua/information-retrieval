@@ -14,6 +14,8 @@ import com.ukma.davydenko.indexbuilder.positional.PositionalEntry;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexBuilder;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexEntry;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexSearch;
+import com.ukma.davydenko.indexbuilder.premuterm.PremutermIndexBuilder;
+import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexBuilder;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexEntry;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordEntry;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexBuilder;
@@ -21,56 +23,38 @@ import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexSearch;
 
 public class Main {
 	
-	private static String folderName = "books";
-	
-	public static MyArray<String> permuterm(String term) {
-		MyArray<String> result = new MyArray<>();
-		
-		String newTerm = term + "$";
-		
-		for (int i = 0; i < newTerm.length(); ++i) {
-			char firstChar = newTerm.charAt(0);
-			result.add(newTerm);
-			newTerm = newTerm.substring(1, newTerm.length()) + firstChar;
-		}
-		
-		System.out.println();
-		
-		return result;
-	}
-	
-	public static MyArray<String> createKGram(int k, String term) {
-		MyArray<String> result = new MyArray<>();
-		
-		String newTerm = "$" + term + "$";
-		
-		int curIndex = -1;
-		String gram = null;
-		
-		do {
-			gram = newTerm.substring(++curIndex, curIndex + k);
-			result.add(gram);
-		} while (curIndex + k < newTerm.length());
-		
-		return result;
-	}
+	private static String folderName = "test";
 	
 	public static void main(String[] args) {
 		
-		MyArray<String> grams = createKGram(3, "castle");
+		MyArray<String> grams = TrigramIndexBuilder.createKGram(3, "castle");
 		for (int i = 0; i < grams.size(); ++i) {
 			System.out.println(grams.get(i));
 		}
 		
-		MyArray<String> permuterm = permuterm("hello");
+		MyArray<String> permuterm = PremutermIndexBuilder.permuterm("hello");
 		for (int i = 0; i < grams.size(); ++i) {
 			System.out.println(permuterm.get(i));
 		}
 		
 		// ARRAY TO TXT PROCESSING
 //		long startTime = System.currentTimeMillis();
-//		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
-//		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
+		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
+		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
+		
+		MyArray<String> triGrams = new MyArray<>();
+		for (int i = 0; i < index.size(); ++i) {
+			MyArray<String> gram = new MyArray<>();
+			grams = TrigramIndexBuilder.createKGram(3, index.get(i).getTerm());
+			
+			for (int j = 0; j < grams.size(); ++j) {
+				triGrams.add(grams.get(j));
+			}
+		}
+		
+		for (int i = 0; i < triGrams.size(); ++i) {
+			System.out.println(triGrams.get(i));
+		}
 //		
 //		// OUTPUT DICTIONARY TO TXT FILE
 //		IndexBuilder.writeIndexToFile(index, "index_arr.txt");
