@@ -18,6 +18,7 @@ import com.ukma.davydenko.indexbuilder.premuterm.PremutermIndexBuilder;
 import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexBuilder;
 import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexEntry;
 import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexPair;
+import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexSearch;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexEntry;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordEntry;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexBuilder;
@@ -29,7 +30,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		MyArray<String> permuterm = PremutermIndexBuilder.permuterm("hello");
+		MyArray<String> permuterm = PremutermIndexBuilder.getPermuterm("hello");
 		for (int i = 0; i < permuterm.size(); ++i) {
 			System.out.println(permuterm.get(i));
 		}
@@ -49,7 +50,10 @@ public class Main {
 		for (int i = 0; i < trigramIndex.size(); ++i) {
 			System.out.println(trigramIndex.get(i));
 		}
-//		
+	
+		TrigramIndexSearch trigramSearch = new TrigramIndexSearch(trigramIndex, index);
+		trigramSearch.startTrigramIndexSearch();
+		
 //		// OUTPUT DICTIONARY TO TXT FILE
 //		IndexBuilder.writeIndexToFile(index, "index_arr.txt");
 //		long stopTime = System.currentTimeMillis();
