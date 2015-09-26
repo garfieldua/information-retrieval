@@ -12,6 +12,7 @@ public final class Consts {
 	
 	public static final String splitRegex = "[^a-zA-Z]+";
 	public static final String splitRegexPos = "[^a-zA-Z0-9]+";
+	public static final String splitRegexGram = "[^a-zA-Z\\$]+";
 	public static final String punctRegex = "\\p{Punct}";
 	public static final String punctReplacement = "";
 }

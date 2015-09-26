@@ -16,6 +16,7 @@ public class TrigramIndexBuilder {
 		
 		do {
 			gram = newTerm.substring(++curIndex, curIndex + k);
+			
 			result.add(gram);
 		} while (curIndex + k < newTerm.length());
 		
@@ -26,10 +27,12 @@ public class TrigramIndexBuilder {
 		MyArray<TrigramIndexPair> pairs = new MyArray<>();
 		
 		for (int i = 0; i < index.size(); ++i) {
-			MyArray<String> grams = TrigramIndexBuilder.createKGram(3, index.get(i).getTerm());
-			
-			for (int j = 0; j < grams.size(); ++j) {
-				pairs.add(new TrigramIndexPair(grams.get(j), index.get(i).getTerm()));
+			if (index.get(i).getTerm().length() >= 1) {
+				MyArray<String> grams = TrigramIndexBuilder.createKGram(3, index.get(i).getTerm());
+				
+				for (int j = 0; j < grams.size(); ++j) {
+					pairs.add(new TrigramIndexPair(grams.get(j), index.get(i).getTerm()));
+				}
 			}
 		}
 		

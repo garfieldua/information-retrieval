@@ -26,14 +26,12 @@ import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexSearch;
 
 public class Main {
 	
-	private static String folderName = "test";
+	private static String folderName = "books";
 	
 	public static void main(String[] args) {
 		
 		MyArray<String> permuterm = PremutermIndexBuilder.getPermuterm("hello");
-		for (int i = 0; i < permuterm.size(); ++i) {
-			System.out.println(permuterm.get(i));
-		}
+
 		
 		// ARRAY TO TXT PROCESSING
 //		long startTime = System.currentTimeMillis();
@@ -41,17 +39,9 @@ public class Main {
 		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
 		
 		MyArray<TrigramIndexPair> trigramPairs = TrigramIndexBuilder.getTrigramPairs(index);
-		for (int i = 0; i < trigramPairs.size(); ++i) {
-			System.out.println(trigramPairs.get(i));
-		}
-		
-		System.out.println();
 		MyArray<TrigramIndexEntry> trigramIndex = TrigramIndexBuilder.buildIndex(trigramPairs);
-		for (int i = 0; i < trigramIndex.size(); ++i) {
-			System.out.println(trigramIndex.get(i));
-		}
-	
-		TrigramIndexSearch trigramSearch = new TrigramIndexSearch(trigramIndex, index);
+
+		TrigramIndexSearch trigramSearch = new TrigramIndexSearch(trigramIndex, index, folderName);
 		trigramSearch.startTrigramIndexSearch();
 		
 //		// OUTPUT DICTIONARY TO TXT FILE

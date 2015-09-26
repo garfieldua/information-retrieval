@@ -237,6 +237,12 @@ public class QueryProcessor {
 		}
 	}
 	
+	public MyArray<Integer> processQuery(String query) throws Exception {
+		String postfix = toPostfix(query);
+		
+		return computePostfix(postfix);
+	}
+	
 	public void startQueryProcessor() {
 		System.out.println();
 		System.out.println("Type an infix query. Following operations are allowed:");
