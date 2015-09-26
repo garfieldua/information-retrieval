@@ -28,12 +28,18 @@ public class TrigramIndexPair implements Comparable<TrigramIndexPair> {
 
 	@Override
 	public int compareTo(TrigramIndexPair o) {
-		int i = term.compareTo(o.term);
+		int i = gram.compareTo(o.gram);
 	    if (i != 0) return i;
 
-	    i = gram.compareTo(o.gram);
+	    i = term.compareTo(o.term);
 	    if (i != 0) return i;
 	    
 		return i;
-	}	
+	}
+
+	@Override
+	public String toString() {
+		return "TrigramIndexPair [gram=" + gram + ", term=" + term + "]";
+	}
+
 }

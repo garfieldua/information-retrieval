@@ -14,8 +14,6 @@ public class PremutermIndexBuilder {
 			newTerm = newTerm.substring(1, newTerm.length()) + firstChar;
 		}
 		
-		System.out.println();
-		
 		return result;
 	}
 }

@@ -16,6 +16,8 @@ import com.ukma.davydenko.indexbuilder.positional.PositionalIndexEntry;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexSearch;
 import com.ukma.davydenko.indexbuilder.premuterm.PremutermIndexBuilder;
 import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexBuilder;
+import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexEntry;
+import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexPair;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexEntry;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordEntry;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexBuilder;
@@ -27,13 +29,8 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		MyArray<String> grams = TrigramIndexBuilder.createKGram(3, "castle");
-		for (int i = 0; i < grams.size(); ++i) {
-			System.out.println(grams.get(i));
-		}
-		
 		MyArray<String> permuterm = PremutermIndexBuilder.permuterm("hello");
-		for (int i = 0; i < grams.size(); ++i) {
+		for (int i = 0; i < permuterm.size(); ++i) {
 			System.out.println(permuterm.get(i));
 		}
 		
@@ -42,18 +39,15 @@ public class Main {
 		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
 		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
 		
-		MyArray<String> triGrams = new MyArray<>();
-		for (int i = 0; i < index.size(); ++i) {
-			MyArray<String> gram = new MyArray<>();
-			grams = TrigramIndexBuilder.createKGram(3, index.get(i).getTerm());
-			
-			for (int j = 0; j < grams.size(); ++j) {
-				triGrams.add(grams.get(j));
-			}
+		MyArray<TrigramIndexPair> trigramPairs = TrigramIndexBuilder.getTrigramPairs(index);
+		for (int i = 0; i < trigramPairs.size(); ++i) {
+			System.out.println(trigramPairs.get(i));
 		}
 		
-		for (int i = 0; i < triGrams.size(); ++i) {
-			System.out.println(triGrams.get(i));
+		System.out.println();
+		MyArray<TrigramIndexEntry> trigramIndex = TrigramIndexBuilder.buildIndex(trigramPairs);
+		for (int i = 0; i < trigramIndex.size(); ++i) {
+			System.out.println(trigramIndex.get(i));
 		}
 //		
 //		// OUTPUT DICTIONARY TO TXT FILE
