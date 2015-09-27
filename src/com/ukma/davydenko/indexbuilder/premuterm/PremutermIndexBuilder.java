@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import com.ukma.davydenko.indexbuilder.data.MyArray;
 import com.ukma.davydenko.indexbuilder.entities.IndexEntry;
+import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexEntry;
 
 public class PremutermIndexBuilder {
 	public static MyArray<String> getPermuterm(String term) {
@@ -36,11 +37,4 @@ public class PremutermIndexBuilder {
 		return pairs;
 	}
 	
-	public static MyArray<PremutermIndexEntry> buildIndex(MyArray<PremutermIndexPair> pairs) {
-		MyArray<PremutermIndexEntry> index = new MyArray<>();
-		
-		
-		
-		return index;
-	}
 }

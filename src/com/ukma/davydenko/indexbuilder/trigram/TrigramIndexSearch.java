@@ -141,14 +141,12 @@ public class TrigramIndexSearch {
 							for (int k = 0; k < originalTerms.length; ++k) {
 								// checking correctness of beginning of word
 								if (k == 0) {
-									//System.out.println(curTerms.get(j).substring(0, originalTerms[k].length()));
 									if (!curTerms.get(j).substring(0, originalTerms[k].length()).equals(originalTerms[k])) {
 										flag = false;
 									}
 								}
 								// checking correctness of ending of word
 								else if (k == originalTerms.length - 1) {
-									//System.out.println(curTerms.get(j).substring(curTerms.get(j).length()-originalTerms[k].length(), curTerms.get(j).length()));
 									if (!curTerms.get(j).substring(curTerms.get(j).length()-originalTerms[k].length(), curTerms.get(j).length()).equals(originalTerms[k])) {
 										flag = false;
 									}

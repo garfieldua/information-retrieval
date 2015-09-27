@@ -15,6 +15,8 @@ import com.ukma.davydenko.indexbuilder.positional.PositionalIndexBuilder;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexEntry;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexSearch;
 import com.ukma.davydenko.indexbuilder.premuterm.PremutermIndexBuilder;
+import com.ukma.davydenko.indexbuilder.premuterm.PremutermIndexPair;
+import com.ukma.davydenko.indexbuilder.suffix.TrieVocabulary;
 import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexBuilder;
 import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexEntry;
 import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexPair;
@@ -30,7 +32,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		MyArray<String> permuterm = PremutermIndexBuilder.getPermuterm("hello");
+		MyArray<String> permuterm = PremutermIndexBuilder.getPermuterm("books");
 
 		
 		// ARRAY TO TXT PROCESSING
@@ -38,11 +40,28 @@ public class Main {
 		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
 		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
 		
+//		CompactSuffixTree tree = new CompactSuffixTree(new SimpleSuffixTree("bananas"));
+//		String properties = "rankdir=LR; node[shape=box fillcolor=gray95 style=filled]\n";
+//		System.out.println("digraph {\n" + properties + tree.getRoot() + "}");
+		
+		MyArray<PremutermIndexPair> premutermPairs = PremutermIndexBuilder.getPremutermPairs(index);
+		
 		MyArray<TrigramIndexPair> trigramPairs = TrigramIndexBuilder.getTrigramPairs(index);
 		MyArray<TrigramIndexEntry> trigramIndex = TrigramIndexBuilder.buildIndex(trigramPairs);
-
+		
+		TrieVocabulary trie = new TrieVocabulary();
+		for (int i = 0; i < index.size(); ++i) {
+			if (index.get(i).getTerm().length() >= 1) {
+				trie.add(index.get(i).getTerm());
+			}
+		}
+		trie.print(trie.getNode("worship"), "worship");
+		System.out.println(trie.isPrefix("worship"));
+		
 		TrigramIndexSearch trigramSearch = new TrigramIndexSearch(trigramIndex, index, folderName);
 		trigramSearch.startTrigramIndexSearch();
+		
+		
 		
 //		// OUTPUT DICTIONARY TO TXT FILE
 //		IndexBuilder.writeIndexToFile(index, "index_arr.txt");
