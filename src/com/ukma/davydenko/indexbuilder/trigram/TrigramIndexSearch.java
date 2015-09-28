@@ -8,6 +8,7 @@ import com.ukma.davydenko.indexbuilder.data.MyArray;
 import com.ukma.davydenko.indexbuilder.entities.IndexEntry;
 import com.ukma.davydenko.indexbuilder.logic.QueryProcessor;
 import com.ukma.davydenko.utils.Consts;
+import com.ukma.davydenko.utils.Utils;
 
 public class TrigramIndexSearch {
 	private MyArray<TrigramIndexEntry> trigramIndex;
@@ -56,26 +57,7 @@ public class TrigramIndexSearch {
     	return result;
     }
     
-	private MyArray<String> getTermsIntersection(MyArray<String> list1, MyArray<String> list2) {
-		MyArray<String> resultList = new MyArray<>();
-		
-		int i = 0;
-    	int j = 0;
-    	
-    	while (i < list1.size() && j < list2.size()) {
-    		if (list1.get(i).equals(list2.get(j))) {
-    			resultList.add(list1.get(i));
-    			++i;
-    			++j;
-    		} else if (list1.get(i).compareTo(list2.get(j)) < 0) {
-    			++i;
-    		} else {
-    			++j;
-    		}
-    	}
-		
-		return resultList;
-	}
+	
 	
 	public void startTrigramIndexSearch() {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -125,9 +107,9 @@ public class TrigramIndexSearch {
 						} else {
 							while (i < degramedTerms.size() - 1) {
 								if (i == 0) {
-									curTerms = getTermsIntersection(trigramIndex.get(binarySearch(degramedTerms.get(i))).getTerms(), trigramIndex.get(binarySearch(degramedTerms.get(i+1))).getTerms());
+									curTerms = Utils.getTermsIntersection(trigramIndex.get(binarySearch(degramedTerms.get(i))).getTerms(), trigramIndex.get(binarySearch(degramedTerms.get(i+1))).getTerms());
 								} else {
-									curTerms = getTermsIntersection(curTerms, trigramIndex.get(binarySearch(degramedTerms.get(i+1))).getTerms());
+									curTerms = Utils.getTermsIntersection(curTerms, trigramIndex.get(binarySearch(degramedTerms.get(i+1))).getTerms());
 								}
 								
 								++i;

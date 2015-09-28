@@ -16,6 +16,7 @@ import com.ukma.davydenko.indexbuilder.positional.PositionalIndexEntry;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexSearch;
 import com.ukma.davydenko.indexbuilder.premuterm.PremutermIndexBuilder;
 import com.ukma.davydenko.indexbuilder.premuterm.PremutermIndexPair;
+import com.ukma.davydenko.indexbuilder.suffix.TrieSearch;
 import com.ukma.davydenko.indexbuilder.suffix.TrieVocabulary;
 import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexBuilder;
 import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexEntry;
@@ -34,7 +35,8 @@ public class Main {
 		
 		MyArray<String> permuterm = PremutermIndexBuilder.getPermuterm("books");
 
-		
+
+		System.out.println((char)Character.getNumericValue('a'));
 		// ARRAY TO TXT PROCESSING
 //		long startTime = System.currentTimeMillis();
 		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
@@ -49,14 +51,32 @@ public class Main {
 		MyArray<TrigramIndexPair> trigramPairs = TrigramIndexBuilder.getTrigramPairs(index);
 		MyArray<TrigramIndexEntry> trigramIndex = TrigramIndexBuilder.buildIndex(trigramPairs);
 		
-		TrieVocabulary trie = new TrieVocabulary();
+		// building suffix trie
+		TrieVocabulary directTrie = new TrieVocabulary();
+		TrieVocabulary reverseTrie = new TrieVocabulary();
 		for (int i = 0; i < index.size(); ++i) {
-			if (index.get(i).getTerm().length() >= 1) {
-				trie.add(index.get(i).getTerm());
+			String word = index.get(i).getTerm();
+			if (word.length() >= 1) {
+				directTrie.add(word);
+				String reverse = new StringBuilder(word).reverse().toString();
+				reverseTrie.add(reverse);
 			}
 		}
-		trie.print(trie.getNode("worship"), "worship");
-		System.out.println(trie.isPrefix("worship"));
+		//trie.print(trie.getNode("worship"), "worship");
+		//System.out.println(trie.isPrefix("worship"));
+		
+//		MyArray<String> words = directTrie.getAllSuffixes("worship");
+//		for (int i = 0; i < words.size(); ++i) {
+//			System.out.println(words.get(i));
+//		}
+//		
+//		words = reverseTrie.getAllSuffixes("lluf");
+//		for (int i = 0; i < words.size(); ++i) {
+//			System.out.println(words.get(i));
+//		}
+		
+		TrieSearch trieSearch = new TrieSearch(directTrie, reverseTrie, index, folderName);
+		trieSearch.startTrieSearch();
 		
 		TrigramIndexSearch trigramSearch = new TrigramIndexSearch(trigramIndex, index, folderName);
 		trigramSearch.startTrigramIndexSearch();

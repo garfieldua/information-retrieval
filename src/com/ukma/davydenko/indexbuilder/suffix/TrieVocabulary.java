@@ -2,6 +2,7 @@ package com.ukma.davydenko.indexbuilder.suffix;
 
 import java.util.Arrays;
 
+import com.ukma.davydenko.indexbuilder.data.MyArray;
 import com.ukma.davydenko.indexbuilder.suffix.Alphabet;
 
 public class TrieVocabulary implements Vocabulary {
@@ -77,22 +78,31 @@ public class TrieVocabulary implements Vocabulary {
 		return node;
 	}
 
-	public void print (TrieVocabulary t, String s) {
-		String news = s;
+	private MyArray<String> getAllSuffixesHelper(String s, MyArray<String> result) {
+		TrieVocabulary t = getNode(s);
+		
+		String ss = s;
 		for (int i = 0; i < t.children.length; ++i) {
 			if (t.children[i] != null) {
-				news = s + t.children[i].character;
+				ss = s + t.children[i].character;
 				if (t.children[i].hasChildren()) {
-					print(t.children[i], news);
+					getAllSuffixesHelper(ss, result);
 				}
 				
 				if (t.children[i].isWord) {
-					System.out.println(news);
-					news = s;
+					result.add(ss);
+					ss = s;
 				}
 			}
 			
 		}
+		return result;
+	}
+	
+	public MyArray<String> getAllSuffixes (String s) {
+		MyArray<String> result = new MyArray<>();
+		
+		return getAllSuffixesHelper(s, result);
 	}
 	
 	public boolean isWord() {
