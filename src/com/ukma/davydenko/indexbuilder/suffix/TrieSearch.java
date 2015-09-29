@@ -8,6 +8,7 @@ import com.ukma.davydenko.indexbuilder.data.MyArray;
 import com.ukma.davydenko.indexbuilder.entities.IndexEntry;
 import com.ukma.davydenko.indexbuilder.logic.QueryProcessor;
 import com.ukma.davydenko.utils.Consts;
+import com.ukma.davydenko.utils.Utils;
 
 public class TrieSearch {
 	
@@ -75,14 +76,11 @@ public class TrieSearch {
 					quit = true;
 				} else {
 					String[] originalTerms = input.toLowerCase().replaceAll("(\\*)" + Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegexPos);
-					System.out.println(Arrays.toString(originalTerms));
 					
 					// handling three cases
-
-					// case 1: query if form of term* - using direct trie
+					// case 1: query in form of term* - using direct trie
 					if (input.indexOf('*') == input.length()-1) {
 						MyArray<String> terms = directTrie.getAllSuffixes(originalTerms[0]);
-						System.out.println(originalTerms[0] + " : " + qp.processQuery(originalTerms[0]));
 						for (int i = 0; i < terms.size(); ++i) {
 							System.out.println(terms.get(i) + " : " + qp.processQuery(terms.get(i)));
 						}
@@ -92,20 +90,39 @@ public class TrieSearch {
 						String toSearch = new StringBuilder(originalTerms[1]).reverse().toString();
 						System.out.println(toSearch);
 						MyArray<String> terms = reverseTrie.getAllSuffixes(toSearch);
-						System.out.println(originalTerms[1] + " : " + qp.processQuery(originalTerms[1]));
 						for (int i = 0; i < terms.size(); ++i) {
 							String backReverse = new StringBuilder(terms.get(i)).reverse().toString();
 							System.out.println(backReverse + " : " + qp.processQuery(backReverse));
 						}
 					}
-					// case 3: query if fowm of te*rm - using both direct and reverse trie
+					// case 3: query if form of te*rm - using both direct and reverse trie
 					else {
-						System.out.println("middle");
+						String leftPart = originalTerms[0];
+						String rightPart = new StringBuilder(originalTerms[1]).reverse().toString();
+						
+						MyArray<String> leftPartTerms = directTrie.getAllSuffixes(leftPart);
+						MyArray<String> rightPartTerms = reverseTrie.getAllSuffixes(rightPart);
+						
+						// reversing rightPartTerms
+						MyArray<String> rightPartTermsRev = new MyArray<String>();
+						for (int i = 0; i < rightPartTerms.size(); ++i) {
+							rightPartTermsRev.add(new StringBuilder(rightPartTerms.get(i)).reverse().toString());
+						}
+						
+						// need to sort them
+						Arrays.sort(rightPartTermsRev.getRawArray(), 0, rightPartTermsRev.size());
+						
+						MyArray<String> intersection = Utils.getTermsIntersection(leftPartTerms, rightPartTermsRev);
+						
+						for (int i = 0; i < intersection.size(); ++i) {
+							System.out.println(intersection.get(i) + " : " + qp.processQuery(intersection.get(i)));
+						}
 					}
+					
 				}
 			} catch (Exception e) {
 				System.out.println("Invalid expression or no result");
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 		} while (!quit);
 	}
