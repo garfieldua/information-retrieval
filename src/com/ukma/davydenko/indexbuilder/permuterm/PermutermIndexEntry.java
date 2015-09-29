@@ -1,12 +1,12 @@
-package com.ukma.davydenko.indexbuilder.premuterm;
+package com.ukma.davydenko.indexbuilder.permuterm;
 
 import com.ukma.davydenko.indexbuilder.data.MyArray;
 
-public class PremutermIndexEntry {
+public class PermutermIndexEntry {
 	private String premuterm;
 	private MyArray<String> terms;
 	
-	public PremutermIndexEntry(String premuterm, MyArray<String> terms) {
+	public PermutermIndexEntry(String premuterm, MyArray<String> terms) {
 		super();
 		this.setPremuterm(premuterm);
 		this.setTerms(terms);

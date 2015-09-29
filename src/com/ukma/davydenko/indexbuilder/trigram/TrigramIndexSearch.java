@@ -83,8 +83,9 @@ public class TrigramIndexSearch {
 						
 						String[] terms = input.toLowerCase().replaceAll("(\\*\\$)" + Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegexGram);
 
-						System.out.println(Arrays.toString(originalTerms));
-						System.out.println(Arrays.toString(terms));
+						//System.out.println(Arrays.toString(originalTerms));
+						//System.out.println(Arrays.toString(terms));
+						
 						// decouple grams if needed
 						MyArray<String> degramedTerms = new MyArray<>();
 						for (String term : terms) {

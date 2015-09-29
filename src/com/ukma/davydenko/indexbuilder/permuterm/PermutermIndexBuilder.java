@@ -1,12 +1,11 @@
-package com.ukma.davydenko.indexbuilder.premuterm;
+package com.ukma.davydenko.indexbuilder.permuterm;
 
 import java.util.Arrays;
 
 import com.ukma.davydenko.indexbuilder.data.MyArray;
 import com.ukma.davydenko.indexbuilder.entities.IndexEntry;
-import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexEntry;
 
-public class PremutermIndexBuilder {
+public class PermutermIndexBuilder {
 	public static MyArray<String> getPermuterm(String term) {
 		MyArray<String> result = new MyArray<>();
 		
@@ -21,14 +20,14 @@ public class PremutermIndexBuilder {
 		return result;
 	}
 	
-	public static MyArray<PremutermIndexPair> getPremutermPairs(MyArray<IndexEntry> index) {
-		MyArray<PremutermIndexPair> pairs = new MyArray<>();
+	public static MyArray<PermutermIndexPair> getPremutermPairs(MyArray<IndexEntry> index) {
+		MyArray<PermutermIndexPair> pairs = new MyArray<>();
 		
 		for (int i = 0; i < index.size(); ++i) {
-			MyArray<String> grams = PremutermIndexBuilder.getPermuterm(index.get(i).getTerm());
+			MyArray<String> grams = PermutermIndexBuilder.getPermuterm(index.get(i).getTerm());
 			
 			for (int j = 0; j < grams.size(); ++j) {
-				pairs.add(new PremutermIndexPair(grams.get(j), index.get(i).getTerm()));
+				pairs.add(new PermutermIndexPair(grams.get(j), index.get(i).getTerm()));
 			}
 		}
 		

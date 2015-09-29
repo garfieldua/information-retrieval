@@ -1,10 +1,10 @@
-package com.ukma.davydenko.indexbuilder.premuterm;
+package com.ukma.davydenko.indexbuilder.permuterm;
 
-public class PremutermIndexPair implements Comparable<PremutermIndexPair> {
+public class PermutermIndexPair implements Comparable<PermutermIndexPair> {
 	private String premuterm;
 	private String term;
 	
-	public PremutermIndexPair(String premuterm, String term) {
+	public PermutermIndexPair(String premuterm, String term) {
 		super();
 		this.setPremuterm(premuterm);
 		this.setTerm(term);
@@ -27,7 +27,7 @@ public class PremutermIndexPair implements Comparable<PremutermIndexPair> {
 	}
 	
 	@Override
-	public int compareTo(PremutermIndexPair o) {
+	public int compareTo(PermutermIndexPair o) {
 		int i = premuterm.compareTo(o.premuterm);
 	    if (i != 0) return i;
 

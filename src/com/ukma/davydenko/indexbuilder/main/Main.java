@@ -10,12 +10,13 @@ import com.ukma.davydenko.indexbuilder.entities.IndexEntry;
 import com.ukma.davydenko.indexbuilder.entities.MatrixEntry;
 import com.ukma.davydenko.indexbuilder.logic.IndexBuilder;
 import com.ukma.davydenko.indexbuilder.logic.QueryProcessor;
+import com.ukma.davydenko.indexbuilder.permuterm.PermutermIndexBuilder;
+import com.ukma.davydenko.indexbuilder.permuterm.PermutermIndexPair;
+import com.ukma.davydenko.indexbuilder.permuterm.PermutermIndexSearch;
 import com.ukma.davydenko.indexbuilder.positional.PositionalEntry;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexBuilder;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexEntry;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexSearch;
-import com.ukma.davydenko.indexbuilder.premuterm.PremutermIndexBuilder;
-import com.ukma.davydenko.indexbuilder.premuterm.PremutermIndexPair;
 import com.ukma.davydenko.indexbuilder.suffix.TrieSearch;
 import com.ukma.davydenko.indexbuilder.suffix.TrieVocabulary;
 import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexBuilder;
@@ -33,7 +34,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		MyArray<String> permuterm = PremutermIndexBuilder.getPermuterm("books");
+		
 
 
 		System.out.println((char)Character.getNumericValue('a'));
@@ -42,15 +43,23 @@ public class Main {
 		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
 		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
 		
-//		CompactSuffixTree tree = new CompactSuffixTree(new SimpleSuffixTree("bananas"));
-//		String properties = "rankdir=LR; node[shape=box fillcolor=gray95 style=filled]\n";
-//		System.out.println("digraph {\n" + properties + tree.getRoot() + "}");
+		// PERMUTERMS
+		MyArray<PermutermIndexPair> premutermPairs = PermutermIndexBuilder.getPremutermPairs(index);
 		
-		MyArray<PremutermIndexPair> premutermPairs = PremutermIndexBuilder.getPremutermPairs(index);
+		// building premuterm trie
+		TrieVocabulary premutermTrie = new TrieVocabulary();
+		for (int i = 0; i < index.size(); ++i) {
+			MyArray<String> permuterm = PermutermIndexBuilder.getPermuterm(index.get(i).getTerm());
+			
+			for (int j = 0; j < permuterm.size(); ++j) {
+				premutermTrie.add(permuterm.get(j));
+			}
+		}
 		
-		MyArray<TrigramIndexPair> trigramPairs = TrigramIndexBuilder.getTrigramPairs(index);
-		MyArray<TrigramIndexEntry> trigramIndex = TrigramIndexBuilder.buildIndex(trigramPairs);
+		PermutermIndexSearch permutermSearch = new PermutermIndexSearch(premutermTrie, premutermPairs, index, folderName);
+		permutermSearch.startPermutermSearch();
 		
+		// SUFFIX TRIES
 		// building suffix trie
 		TrieVocabulary directTrie = new TrieVocabulary();
 		TrieVocabulary reverseTrie = new TrieVocabulary();
@@ -62,25 +71,17 @@ public class Main {
 				reverseTrie.add(reverse);
 			}
 		}
-		//trie.print(trie.getNode("worship"), "worship");
-		//System.out.println(trie.isPrefix("worship"));
-		
-//		MyArray<String> words = directTrie.getAllSuffixes("worship");
-//		for (int i = 0; i < words.size(); ++i) {
-//			System.out.println(words.get(i));
-//		}
-//		
-//		words = reverseTrie.getAllSuffixes("lluf");
-//		for (int i = 0; i < words.size(); ++i) {
-//			System.out.println(words.get(i));
-//		}
+
 		
 		TrieSearch trieSearch = new TrieSearch(directTrie, reverseTrie, index, folderName);
 		trieSearch.startTrieSearch();
 		
+		// TRIGRAMS
+		MyArray<TrigramIndexPair> trigramPairs = TrigramIndexBuilder.getTrigramPairs(index);
+		MyArray<TrigramIndexEntry> trigramIndex = TrigramIndexBuilder.buildIndex(trigramPairs);
+		
 		TrigramIndexSearch trigramSearch = new TrigramIndexSearch(trigramIndex, index, folderName);
 		trigramSearch.startTrigramIndexSearch();
-		
 		
 		
 //		// OUTPUT DICTIONARY TO TXT FILE
