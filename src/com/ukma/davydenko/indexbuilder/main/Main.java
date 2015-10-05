@@ -17,6 +17,7 @@ import com.ukma.davydenko.indexbuilder.positional.PositionalEntry;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexBuilder;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexEntry;
 import com.ukma.davydenko.indexbuilder.positional.PositionalIndexSearch;
+import com.ukma.davydenko.indexbuilder.spimi.SpimiIndexBuilder;
 import com.ukma.davydenko.indexbuilder.suffix.TrieSearch;
 import com.ukma.davydenko.indexbuilder.suffix.TrieVocabulary;
 import com.ukma.davydenko.indexbuilder.trigram.TrigramIndexBuilder;
@@ -33,15 +34,15 @@ public class Main {
 	private static String folderName = "books";
 	
 	public static void main(String[] args) {
-		
-		
 
-
-		System.out.println((char)Character.getNumericValue('a'));
 		// ARRAY TO TXT PROCESSING
 //		long startTime = System.currentTimeMillis();
 		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
 		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
+		
+		// SPIMI
+		SpimiIndexBuilder spIndex = new SpimiIndexBuilder(folderName);
+		spIndex.buildSpimiIndex();
 		
 		// PERMUTERMS
 		MyArray<PermutermIndexPair> premutermPairs = PermutermIndexBuilder.getPremutermPairs(index);
@@ -72,7 +73,6 @@ public class Main {
 			}
 		}
 
-		
 		TrieSearch trieSearch = new TrieSearch(directTrie, reverseTrie, index, folderName);
 		trieSearch.startTrieSearch();
 		
