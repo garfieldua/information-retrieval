@@ -38,6 +38,11 @@ public class MyArray<T> implements Container<T>, Serializable {
 	}
 
 	@Override
+	public void set(int index, T element) {
+		array[index] = element;
+	}
+	
+	@Override
 	public T get(int index) {
 		return array[index];
 	}

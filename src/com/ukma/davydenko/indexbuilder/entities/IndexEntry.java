@@ -17,6 +17,21 @@ public class IndexEntry implements Serializable, Comparable<IndexEntry> {
 		this.frequency = frequency;
 		this.postingsList = postingsList;
 	}
+	
+	public IndexEntry(String str) {
+		String[] groups = str.split(" ");
+		String[] docIDs = groups[1].split(",");
+
+		MyArray<Integer> docIDarr = new MyArray<>();
+		
+		for (String docID : docIDs) {
+			docIDarr.add(Integer.parseInt(docID));
+		}
+		
+		this.term = groups[0];
+		this.postingsList = docIDarr;
+		this.frequency = docIDarr.size();
+	}
 
 	public String getTerm() {
 		return term;

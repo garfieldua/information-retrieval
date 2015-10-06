@@ -35,53 +35,62 @@ public class Main {
 	
 	public static void main(String[] args) {
 
+		IndexEntry ie = new IndexEntry("wanted 3,4,5,");
+		
 		// ARRAY TO TXT PROCESSING
 //		long startTime = System.currentTimeMillis();
-		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
-		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
+//		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
+//		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
 		
 		// SPIMI
 		SpimiIndexBuilder spIndex = new SpimiIndexBuilder(folderName, "index_blocks");
 		spIndex.buildSpimiIndex();
+		//spIndex.printDocPrinting();
+		try {
+			spIndex.mergeBlocksToFile();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		// PERMUTERMS
-		MyArray<PermutermIndexPair> premutermPairs = PermutermIndexBuilder.getPremutermPairs(index);
-		
-		// building premuterm trie
-		TrieVocabulary premutermTrie = new TrieVocabulary();
-		for (int i = 0; i < index.size(); ++i) {
-			MyArray<String> permuterm = PermutermIndexBuilder.getPermuterm(index.get(i).getTerm());
-			
-			for (int j = 0; j < permuterm.size(); ++j) {
-				premutermTrie.add(permuterm.get(j));
-			}
-		}
-		
-		PermutermIndexSearch permutermSearch = new PermutermIndexSearch(premutermTrie, premutermPairs, index, folderName);
-		permutermSearch.startPermutermSearch();
-		
-		// SUFFIX TRIES
-		// building suffix trie
-		TrieVocabulary directTrie = new TrieVocabulary();
-		TrieVocabulary reverseTrie = new TrieVocabulary();
-		for (int i = 0; i < index.size(); ++i) {
-			String word = index.get(i).getTerm();
-			if (word.length() >= 1) {
-				directTrie.add(word);
-				String reverse = new StringBuilder(word).reverse().toString();
-				reverseTrie.add(reverse);
-			}
-		}
-
-		TrieSearch trieSearch = new TrieSearch(directTrie, reverseTrie, index, folderName);
-		trieSearch.startTrieSearch();
-		
-		// TRIGRAMS
-		MyArray<TrigramIndexPair> trigramPairs = TrigramIndexBuilder.getTrigramPairs(index);
-		MyArray<TrigramIndexEntry> trigramIndex = TrigramIndexBuilder.buildIndex(trigramPairs);
-		
-		TrigramIndexSearch trigramSearch = new TrigramIndexSearch(trigramIndex, index, folderName);
-		trigramSearch.startTrigramIndexSearch();
+//		MyArray<PermutermIndexPair> premutermPairs = PermutermIndexBuilder.getPremutermPairs(index);
+//		
+//		// building premuterm trie
+//		TrieVocabulary premutermTrie = new TrieVocabulary();
+//		for (int i = 0; i < index.size(); ++i) {
+//			MyArray<String> permuterm = PermutermIndexBuilder.getPermuterm(index.get(i).getTerm());
+//			
+//			for (int j = 0; j < permuterm.size(); ++j) {
+//				premutermTrie.add(permuterm.get(j));
+//			}
+//		}
+//		
+//		PermutermIndexSearch permutermSearch = new PermutermIndexSearch(premutermTrie, premutermPairs, index, folderName);
+//		permutermSearch.startPermutermSearch();
+//		
+//		// SUFFIX TRIES
+//		// building suffix trie
+//		TrieVocabulary directTrie = new TrieVocabulary();
+//		TrieVocabulary reverseTrie = new TrieVocabulary();
+//		for (int i = 0; i < index.size(); ++i) {
+//			String word = index.get(i).getTerm();
+//			if (word.length() >= 1) {
+//				directTrie.add(word);
+//				String reverse = new StringBuilder(word).reverse().toString();
+//				reverseTrie.add(reverse);
+//			}
+//		}
+//
+//		TrieSearch trieSearch = new TrieSearch(directTrie, reverseTrie, index, folderName);
+//		trieSearch.startTrieSearch();
+//		
+//		// TRIGRAMS
+//		MyArray<TrigramIndexPair> trigramPairs = TrigramIndexBuilder.getTrigramPairs(index);
+//		MyArray<TrigramIndexEntry> trigramIndex = TrigramIndexBuilder.buildIndex(trigramPairs);
+//		
+//		TrigramIndexSearch trigramSearch = new TrigramIndexSearch(trigramIndex, index, folderName);
+//		trigramSearch.startTrigramIndexSearch();
 		
 		
 //		// OUTPUT DICTIONARY TO TXT FILE

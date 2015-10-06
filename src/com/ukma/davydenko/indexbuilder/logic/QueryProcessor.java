@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 import com.ukma.davydenko.indexbuilder.data.MyArray;
 import com.ukma.davydenko.indexbuilder.entities.IndexEntry;
 import com.ukma.davydenko.utils.Consts;
+import com.ukma.davydenko.utils.Utils;
 
 public class QueryProcessor {
 	private MyArray<Integer> allDocIDs;
@@ -58,85 +59,6 @@ public class QueryProcessor {
             return binarySearch(word, mid + 1, max);
         }
     }
-	
-    public MyArray<Integer> intersect(MyArray<Integer> list1, MyArray<Integer> list2) {
-    	MyArray<Integer> resultList = new MyArray<>();
-    	
-    	int i = 0;
-    	int j = 0;
-    	
-    	while (i < list1.size() && j < list2.size()) {
-    		if (list1.get(i) == list2.get(j)) {
-    			resultList.add(list1.get(i));
-    			++i;
-    			++j;
-    		} else if (list1.get(i) < list2.get(j)) {
-    			++i;
-    		} else {
-    			++j;
-    		}
-    	}
-    	
-    	return resultList;
-    }
-    
-    public MyArray<Integer> union(MyArray<Integer> list1, MyArray<Integer> list2) {
-    	MyArray<Integer> resultList = new MyArray<>();
-    	
-    	int i = 0;
-    	int j = 0;
-    	
-    	while (i < list1.size() && j < list2.size()) {
-    		if (list1.get(i) == list2.get(j)) {
-    			resultList.add(list1.get(i));
-    			++i;
-    			++j;
-    		} else if (list1.get(i) < list2.get(j)) {
-    			resultList.add(list1.get(i));
-    			++i;
-    		} else {
-    			resultList.add(list2.get(j));
-    			++j;
-    		}
-    	}
-    	
-    	// copy left-overs
-    	while (i < list1.size()) {
-    		resultList.add(list1.get(i));
-    		++i;
-    	}
-    	
-    	while (j < list2.size()) {
-    		resultList.add(list2.get(j));
-    		++j;
-    	}
-    	
-    	return resultList;
-    }
-    
-    public MyArray<Integer> getComplementaryDocIDs(MyArray<Integer> list1, MyArray<Integer> list2) {
-		MyArray<Integer> resultList = new MyArray<>();
-		
-    	int i = 0;
-    	int j = 0;
-    	
-    	while (i < list2.size() && j < list1.size()) {
-    		if (list2.get(i).equals(list1.get(j))) {
-    			++i;
-    			++j;
-    		} else if (list2.get(i) < list1.get(j)) {
-    			resultList.add(list2.get(i));
-    			++i;
-    		} 
-    	}
-    	
-    	while (i < list2.size()) {
-    		resultList.add(list2.get(i));
-    		++i;
-    	}
-    	
-    	return resultList;
-	}
 	
 	private String toPostfix(String infix) throws Exception {
 
@@ -212,14 +134,14 @@ public class QueryProcessor {
 	private void applyOperator(String operator, Stack<MyArray<Integer>> s) {
 		MyArray<Integer> op1 = s.pop();
 		if (operator.equals("u~")) {
-			s.push(getComplementaryDocIDs(op1, allDocIDs));
+			s.push(Utils.getComplementaryDocIDs(op1, allDocIDs));
 		} else {
 			MyArray<Integer> op2 = s.pop();
 			MyArray<Integer> result = new MyArray<>();
 			if (operator.equals("&")) {
-				result = intersect(op1, op2);
+				result = Utils.intersect(op1, op2);
 			} else if (operator.equals("|")) {
-				result = union(op1, op2);
+				result = Utils.union(op1, op2);
 			} else {
 				throw new IllegalArgumentException();
 			}
