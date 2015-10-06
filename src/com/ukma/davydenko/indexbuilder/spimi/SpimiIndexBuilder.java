@@ -107,6 +107,7 @@ public class SpimiIndexBuilder {
 		    }
 		});
 		
+		// array of index entries of current processed line of buffer
 		MyArray<IndexEntry> tmpEntries = new MyArray<>();
         for (int i = 0; i < bufferedReaders.size(); i++) {
         	tmpEntries.add(new IndexEntry(bufferedReaders.get(i).readLine()));
@@ -116,53 +117,42 @@ public class SpimiIndexBuilder {
 		PrintWriter out = new PrintWriter(br);
 		
 		while (bufferedReaders.size() > 0) {
-            /*
-             *  To hold index or indices of block(s) where the next lexicographically smallest term is found
-             */
-            ArrayList<Integer> indicesOfBlocksWithSmallestNextTerm = new ArrayList<Integer>(bufferedReaders.size());
+            MyArray<Integer> smallestTermBlockIDs = new MyArray<>();
 
-            indicesOfBlocksWithSmallestNextTerm.add(0);
+            smallestTermBlockIDs.add(0);
             String smallestWord = tmpEntries.get(0).getTerm();
-            /*
-             *  Find the next smallest term and the associated posting lists
-             */
+
             for (int i = 1; i < tmpEntries.size(); i++) {
-                String currentWord = tmpEntries.get(i).getTerm();
-                if (currentWord.compareTo(smallestWord) < 0) {
-                    indicesOfBlocksWithSmallestNextTerm.clear();
-                    indicesOfBlocksWithSmallestNextTerm.add(i);
-                    smallestWord = currentWord;
-                } else if (currentWord.compareTo(smallestWord) == 0) {
-                    indicesOfBlocksWithSmallestNextTerm.add(i);
+                String currWord = tmpEntries.get(i).getTerm();
+                if (currWord.compareTo(smallestWord) < 0) {
+                    smallestTermBlockIDs = new MyArray<>();
+                    smallestTermBlockIDs.add(i);
+                    smallestWord = currWord;
+                } else if (currWord.compareTo(smallestWord) == 0) {
+                    smallestTermBlockIDs.add(i);
                 }
             }
 
-            /*
-             *  Merge the posting lists from the different blocks for the current term and read the next line from the blocks
-             *  that were used to retrieve the current term
-             */
             MyArray<Integer> mergedPostingList = new MyArray<>();
-            out.write(tmpEntries.get(indicesOfBlocksWithSmallestNextTerm.get(0)).getTerm());
+            out.write(tmpEntries.get(smallestTermBlockIDs.get(0)).getTerm());
 
-            // dealing with posting list
-            for (int i = indicesOfBlocksWithSmallestNextTerm.size() - 1; i >= 0; i--) {
-                int indexOfBlockToProcess = indicesOfBlocksWithSmallestNextTerm.get(i);
+            for (int i = smallestTermBlockIDs.size() - 1; i >= 0; i--) {
+                int blockID = smallestTermBlockIDs.get(i);
 
-                /*
-                 * 'entry-safe' method merge is used instead of binary union.
-                 * See PostingsList.java for more details.
-                 */
-                mergedPostingList = Utils.union(mergedPostingList, tmpEntries.get(indexOfBlockToProcess).getPostingsList());
+                // merging postings lists
+                mergedPostingList = Utils.union(mergedPostingList, tmpEntries.get(blockID).getPostingsList());
 
-                String szTermListPair = bufferedReaders.get(indexOfBlockToProcess).readLine();
-                if (szTermListPair == null) {
-                	tmpEntries.remove(indexOfBlockToProcess);
-                	bufferedReaders.get(indexOfBlockToProcess).close();
-                	bufferedReaders.remove(indexOfBlockToProcess);
+                // preparing next term
+                // if no next term (end of file - remove buffer
+                String nextIndexEntry = bufferedReaders.get(blockID).readLine();
+                if (nextIndexEntry == null) {
+                	tmpEntries.remove(blockID);
+                	bufferedReaders.get(blockID).close();
+                	bufferedReaders.remove(blockID);
                 } else {
 
-                	IndexEntry termListPair = new IndexEntry(szTermListPair);
-                    tmpEntries.set(indexOfBlockToProcess, termListPair);
+                	IndexEntry termListPair = new IndexEntry(nextIndexEntry);
+                    tmpEntries.set(blockID, termListPair);
                 }
             }
 
