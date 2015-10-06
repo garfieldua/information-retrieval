@@ -41,7 +41,7 @@ public class Main {
 		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
 		
 		// SPIMI
-		SpimiIndexBuilder spIndex = new SpimiIndexBuilder(folderName);
+		SpimiIndexBuilder spIndex = new SpimiIndexBuilder(folderName, "index_blocks");
 		spIndex.buildSpimiIndex();
 		
 		// PERMUTERMS
