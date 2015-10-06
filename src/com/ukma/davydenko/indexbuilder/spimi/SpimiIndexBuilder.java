@@ -17,14 +17,15 @@ import java.util.TreeSet;
 import com.ukma.davydenko.utils.Consts;
 
 public class SpimiIndexBuilder {
-	private static int MAX_TERMS_NUMBER = 100000;
+	private static int MAX_TERMS_NUMBER = 10000;
+	
 	private String sourcePath;
 	private String blockPath;
 	
+	private Map<String, TreeSet<Integer>> index = new TreeMap<String, TreeSet<Integer>>();
+	
 	private int counter = 0;
 	private int serial = 0;
-	
-	Map<String, TreeSet<Integer>> index = new TreeMap<String, TreeSet<Integer>>();
 	
 	public SpimiIndexBuilder(String sourcePath, String blockPath) {
 		this.sourcePath = sourcePath;
@@ -33,7 +34,7 @@ public class SpimiIndexBuilder {
 
 	public void writeBlockToFile() {
 		try {
-			String fileName = "" + serial + ".block";
+			String fileName = Integer.toString(serial + 1000).substring(1) + ".dictionary";
 			File dir = new File (blockPath);
 			File actualFile = new File (dir, fileName);
 			
@@ -62,6 +63,9 @@ public class SpimiIndexBuilder {
 		
 		++serial;
 		index = new TreeMap<String, TreeSet<Integer>>();
+		
+		// suggesting Java GC to free memory now
+		System.gc();
 	}
 	
 	public void buildSpimiIndex() {
@@ -90,7 +94,7 @@ public class SpimiIndexBuilder {
 									if (index.containsKey(word)) {
 										TreeSet<Integer> list = index.get(word);
 										list.add(docID);
-										++counter;
+										//++counter;
 									} else {
 										TreeSet<Integer> list = new TreeSet<>();
 										list.add(docID);
