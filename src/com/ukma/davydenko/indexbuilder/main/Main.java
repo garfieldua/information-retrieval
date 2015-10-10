@@ -34,25 +34,25 @@ public class Main {
 	private static String folderName = "books";
 	
 	public static void main(String[] args) {
-
-		IndexEntry ie = new IndexEntry("wanted 3,4,5,");
-		
-		// ARRAY TO TXT PROCESSING
-//		long startTime = System.currentTimeMillis();
-//		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
-//		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
-		
 		// SPIMI
+		long startTime = System.currentTimeMillis();
+
 		SpimiIndexBuilder spIndex = new SpimiIndexBuilder(folderName, "index_blocks");
 		spIndex.buildSpimiIndex();
-		//spIndex.printDocPrinting();
+		//spIndex.printDocMapping();
 		try {
 			spIndex.mergeBlocksToFile();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		long stopTime = System.currentTimeMillis();
+	    long elapsedTime = stopTime - startTime;
+	    System.out.println("SPIMI index building took " + elapsedTime + " ms");
 		
+		// ARRAY TO TXT PROCESSING
+//		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
+//		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
+	    
 		// PERMUTERMS
 //		MyArray<PermutermIndexPair> premutermPairs = PermutermIndexBuilder.getPremutermPairs(index);
 //		

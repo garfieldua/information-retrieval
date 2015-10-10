@@ -38,7 +38,7 @@ public class SpimiIndexBuilder {
 		this.docMapping = docMapping;
 	}
 	
-	public void printDocPrinting() {
+	public void printDocMapping() {
 		for (java.util.Map.Entry<String, Integer> entry : docMapping.entrySet()) {
 			String docName = entry.getKey();
 			Integer docId = entry.getValue();
@@ -158,11 +158,14 @@ public class SpimiIndexBuilder {
 
             out.write(mergedPostingList.toString() + "\n");
         }
+		
 		out.close();
+		
+		// clearing temp dictionary files (blocks)
+		for(File file: new File(blockPath).listFiles()) file.delete();
 	}
 	
 	public void buildSpimiIndex() {
-		
 		try {
 			Files.walk(Paths.get(new File(sourcePath).getAbsolutePath())).forEach(filePath -> {
 				
@@ -177,9 +180,10 @@ public class SpimiIndexBuilder {
 			    		
 			    		while ((currentLine = br.readLine()) != null) {
 							
-							String[] words = currentLine.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegex);							
+							String[] words = currentLine.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split("[^\\p{L}\\p{Nd}]+");							
 							
 							for (String word: words) {
+								//System.out.println(word);
 								if (word.length() >= 1) {
 									if (counter > MAX_TERMS_NUMBER) {
 										// flush to disk
