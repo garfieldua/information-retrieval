@@ -1,8 +1,11 @@
 package com.ukma.davydenko.indexbuilder.main;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.lang.instrument.Instrumentation;
 
 import com.ukma.davydenko.indexbuilder.data.MyArray;
 import com.ukma.davydenko.indexbuilder.entities.Entry;
@@ -38,10 +41,10 @@ public class Main {
 		long startTime = System.currentTimeMillis();
 
 		SpimiIndexBuilder spIndex = new SpimiIndexBuilder(folderName, "index_blocks");
-		spIndex.buildSpimiIndex();
+		//spIndex.buildSpimiIndex();
 		//spIndex.printDocMapping();
 		try {
-			spIndex.mergeBlocksToFile();
+		//	spIndex.mergeBlocksToFile();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
