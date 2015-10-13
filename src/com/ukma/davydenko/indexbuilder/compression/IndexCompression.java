@@ -201,44 +201,6 @@ public class IndexCompression {
     }
   }
 
-
-  /**
-   * Gamma encodes all the first numGaps integers in inputGaps and writes the resulting bits to
-   * the BitSet outputGammaCodes.
-   *
-   * @param inputGaps        Array of gaps to be encoded.  The first numGaps are encoded.
-   * @param numGaps          The number of gaps to be encoded.
-   * @param outputGammaCodes The BitSet to which the encoded bits are written
-   * @return Returns the number of bits in the BitSet
-   */
-  public static int gammaEncode(int[] inputGaps, int numGaps, BitSet outputGammaCodes) {
-    outputGammaCodes.clear();
-    int nextIndex = 0;
-    for (int i = 0; i < numGaps; ++i) {
-      nextIndex = gammaEncodeInteger(inputGaps[i], outputGammaCodes, nextIndex);
-    }
-    return nextIndex;
-  }
-
-  /**
-   * Unary encodes all the first numGaps integers in inputGaps and writes the resulting bits to
-   * the BitSet outputUnaryCodes.
-   *
-   * @param inputGaps        Array of gaps to be encoded.  The first numGaps are encoded.
-   * @param numGaps          The number of gaps to be encoded.
-   * @param outputUnaryCodes The BitSet to which the encoded bits are written
-   * @return Returns the number of bits in the BitSet
-   */
-  public static int unaryEncode(int[] inputGaps, int numGaps, BitSet outputUnaryCodes) {
-    outputUnaryCodes.clear();
-    int nextIndex = 0;
-    for (int i = 0; i < numGaps; ++i) {
-      nextIndex = unaryEncodeInteger(inputGaps[i], outputUnaryCodes, nextIndex);
-    }
-    return nextIndex;
-  }
-
-
   ////////////////////////////////////////////////////////////////////////////
   //  Unit test methods
   ////////////////////////////////////////////////////////////////////////////
@@ -249,10 +211,6 @@ public class IndexCompression {
     testGapDecode(false);
     testVBEncodeInteger(false);
     testVBDecodeInteger(false);
-    testUnaryEncodeInteger(false);
-    testUnaryDecodeInteger(false);
-    testGammaEncodeInteger(false);
-    testGammaDecodeInteger(false);
   }
 
 
@@ -357,133 +315,13 @@ public class IndexCompression {
     if (!equalInts(result.get(0), 214577, debugPrint, "Decoding 0x0D0CB1")) {
       success = false;
     }
-
-//    encodedInt[0] = (byte) 0x0D;
-//    encodedInt[1] = (byte) 0x0C;
-//    encodedInt[2] = (byte) 0x0B;
-//    try {
-//    	result = VBDecodeInteger(encodedInt); // should exception
-//      success = false;
-//      if (debugPrint) {
-//        System.out.println("Actual:   " + 0);
-//        System.out.println("Expected: IllegalArgumentException");
-//        System.out.println("Test failed: " + "VBDecodeInteger");
-//      }
-//    } catch (IllegalArgumentException iae) {
-//      // that's correct
-//    }
-
+    
     printStatus(success, "VBDecodeInteger");
     return success;
   }
 
 
-  public static boolean testUnaryEncodeInteger(boolean debugPrint) {
-    boolean success = true;
-    BitSet outputUnaryCode = new BitSet();
-
-    int nextIndex = unaryEncodeInteger(5, outputUnaryCode, 0);
-    if (!equalBitSet(outputUnaryCode, "111110", debugPrint, "Encoding 5") ||
-            !equalInts(nextIndex, 6, debugPrint, "nextIndex for 5")) {
-      success = false;
-    }
-
-    outputUnaryCode.clear();
-    nextIndex = unaryEncodeInteger(0, outputUnaryCode, 0);
-    if (!equalBitSet(outputUnaryCode, "0", debugPrint, "Encoding 0") ||
-            !equalInts(nextIndex, 1, debugPrint, "nextIndex for 0")) {
-      success = false;
-    }
-
-    printStatus(success, "UnaryEncodeInteger");
-    return success;
-  }
-
-
-  public static boolean testUnaryDecodeInteger(boolean debugPrint) {
-    boolean success = true;
-    int[] numberNextIndex = new int[2];
-    BitSet inputUnaryCode = createBitSet("111110");
-    unaryDecodeInteger(inputUnaryCode, 0, numberNextIndex);
-    if (!equalInts(numberNextIndex[0], 5, debugPrint, "Decoding 111110") ||
-            !equalInts(numberNextIndex[1], 6, debugPrint, "NextIndex for 111110")) {
-      success = false;
-    }
-
-    inputUnaryCode = createBitSet("0");
-    unaryDecodeInteger(inputUnaryCode, 0, numberNextIndex);
-    if (!equalInts(numberNextIndex[0], 0, debugPrint, "Decoding 0") ||
-            !equalInts(numberNextIndex[1], 1, debugPrint, "NextIndex for 0")) {
-      success = false;
-    }
-
-    printStatus(success, "UnaryDecodeInteger");
-    return success;
-  }
-
-
-  public static boolean testGammaEncodeInteger(boolean debugPrint) {
-    boolean success = true;
-    BitSet outputGammaCode = new BitSet();
-
-    int nextIndex = gammaEncodeInteger(1, outputGammaCode, 0);
-    if (!equalBitSet(outputGammaCode, "0", debugPrint, "Encoding 1") ||
-            !equalInts(nextIndex, 1, debugPrint, "nextIndex for 1")) {
-      success = false;
-    }
-
-    nextIndex = gammaEncodeInteger(0x05, outputGammaCode, 0);
-    if (!equalBitSet(outputGammaCode, "11001", debugPrint, "Encoding 0x05") ||
-            !equalInts(nextIndex, 5, debugPrint, "nextIndex for 5")) {
-      success = false;
-    }
-
-    nextIndex = gammaEncodeInteger(1025, outputGammaCode, 0);
-    if (!equalBitSet(outputGammaCode, "111111111100000000001", debugPrint, "Encoding 1025") ||
-            !equalInts(nextIndex, 21, debugPrint, "nextIndex for 1025")) {
-      success = false;
-    }
-
-//    // To get this next test to succeed, you have to be careful to treat the first argument
-//    // as if unsigned.  Perhaps see the function Integer.toUnsignedLong(int)
-//    nextIndex = gammaEncodeInteger(-1, outputGammaCode, 0);
-//    if (!equalBitSet(outputGammaCode, "111111111111111111111111111111101111111111111111111111111111111",
-//            debugPrint, "Encoding -1") ||
-//            !equalInts(nextIndex, 63, debugPrint, "nextIndex for -1")) {
-//      success = false;
-//    }
-
-    outputGammaCode.clear();
-    nextIndex = gammaEncodeInteger(0, outputGammaCode, 0);
-    if (!equalBitSet(outputGammaCode, "", debugPrint, "Encoding 0") ||
-            !equalInts(nextIndex, 0, debugPrint, "nextIndex for 0")) {
-      success = false;
-    }
-
-    printStatus(success, "GammaEncodeInteger");
-    return success;
-  }
-
-
-  public static boolean testGammaDecodeInteger(boolean debugPrint) {
-    boolean success = true;
-    int[] numberNextIndex = new int[2];
-    BitSet inputGammaCode = createBitSet("11001");
-    gammaDecodeInteger(inputGammaCode, 0, numberNextIndex);
-    if (!equalInts(numberNextIndex[0], 5, debugPrint, "Decoding 11001")) {
-      success = false;
-    }
-
-    inputGammaCode = createBitSet("1111111111111110111111100000000");
-    gammaDecodeInteger(inputGammaCode, 0, numberNextIndex);
-    if (!equalInts(numberNextIndex[0], 0xFF00, debugPrint, "Decoding 1111111111111110111111100000000")) {
-      success = false;
-    }
-
-    printStatus(success, "GammaDecodeInteger");
-    return success;
-  }
-
+  
   ////////////////////////////////////////////////////////////////////////////
   //  Utility methods for unit tests
   ////////////////////////////////////////////////////////////////////////////
@@ -767,20 +605,12 @@ public class IndexCompression {
     gapEncode(postingsList);
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     VBEncode(postingsList, postingsList.length, outputStream);
-    BitSet outputBits = new BitSet();
-    int numBits = gammaEncode(postingsList, postingsList.length, outputBits);
+    
     System.out.print("For term \"" + termName + "\": ");
     int postingsListSize = (postingsList.length * Integer.SIZE) / 8;
     int vbCodeSize = outputStream.size();
-    int gammaCodeSize = (numBits % 8 == 0) ? numBits / 8 : numBits / 8 + 1;
-    BitSet unaryOutputBits = new BitSet();
-    int unaryNumBits = unaryEncode(postingsList, postingsList.length, unaryOutputBits);
-    int unaryCodeSize = (unaryNumBits % 8 == 0) ? unaryNumBits / 8 : unaryNumBits / 8 + 1;
     System.out.print("Postings list = " + postingsListSize + " bytes; ");
     System.out.print("VB encode = " + vbCodeSize + " bytes; ");
-    System.out.print("Gamma code = " + gammaCodeSize + " bytes; ");
-    System.out.print("Unary code = " + unaryCodeSize + " bytes; ");
-    System.out.print("Bit map = " + (1000 / 8) + " bytes; ");
     System.out.println();
   }
 

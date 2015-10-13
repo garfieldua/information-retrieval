@@ -41,7 +41,7 @@ public class Main {
 		long startTime = System.currentTimeMillis();
 
 		SpimiIndexBuilder spIndex = new SpimiIndexBuilder(folderName, "index_blocks");
-		//spIndex.buildSpimiIndex();
+		spIndex.buildSpimiIndex();
 		//spIndex.printDocMapping();
 		try {
 		//	spIndex.mergeBlocksToFile();
