@@ -4,27 +4,18 @@ import java.io.Serializable;
 
 import com.ukma.davydenko.indexbuilder.data.MyArray;
 
-public class CompressionIndexEntry implements Serializable, Comparable<CompressionIndexEntry> {
+public class CompressionIndexEntry implements Serializable {
 	private static final long serialVersionUID = -6900048458183060169L;
 	
-	private String term;
 	private int frequency;
-	private MyArray<Byte> postingsList;
+	private int termPos;
+	private byte[] postingsList;
 	
-	public CompressionIndexEntry(String term, int frequency, MyArray<Byte> postingsList) {
+	public CompressionIndexEntry(int frequency, int termPos, byte[] postingsList) {
 		super();
-		this.term = term;
+		this.termPos = termPos;
 		this.frequency = frequency;
 		this.postingsList = postingsList;
-	}
-	
-
-	public String getTerm() {
-		return term;
-	}
-	
-	public void setTerm(String term) {
-		this.term = term;
 	}
 	
 	public int getFrequency() {
@@ -35,17 +26,20 @@ public class CompressionIndexEntry implements Serializable, Comparable<Compressi
 		this.frequency = frequency;
 	}
 	
-	public MyArray<Byte> getPostingsList() {
+	public byte[] getPostingsList() {
 		return postingsList;
 	}
 	
-	public void setPostingsList(MyArray<Byte> postingsList) {
+	public void setPostingsList(byte[] postingsList) {
 		this.postingsList = postingsList;
 	}
 
-	@Override
-	public int compareTo(CompressionIndexEntry o) {
-		return this.term.compareTo(o.term);
+	public int getTermPos() {
+		return termPos;
+	}
+
+	public void setTermPos(int termPos) {
+		this.termPos = termPos;
 	}
 	
 }

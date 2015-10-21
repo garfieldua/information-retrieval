@@ -5,8 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 
+import com.ukma.davydenko.indexbuilder.compression.CompressionIndex;
+import com.ukma.davydenko.indexbuilder.compression.CompressionIndexBuilder;
 import com.ukma.davydenko.indexbuilder.data.MyArray;
 import com.ukma.davydenko.indexbuilder.entities.Entry;
 import com.ukma.davydenko.indexbuilder.entities.IndexEntry;
@@ -34,9 +37,19 @@ import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexSearch;
 
 public class Main {
 	
-	private static String folderName = "books";
+	private static String folderName = "test";
 	
 	public static void main(String[] args) {
+		// COMPRESSION
+		MyArray<Entry> entries = CompressionIndexBuilder.processEntries(folderName);
+		CompressionIndex index = null;
+		
+		try {
+			index = CompressionIndexBuilder.buildIndex(entries);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
 		// SPIMI
 		long startTime = System.currentTimeMillis();
 
@@ -44,7 +57,7 @@ public class Main {
 		spIndex.buildSpimiIndex();
 		//spIndex.printDocMapping();
 		try {
-		//	spIndex.mergeBlocksToFile();
+			spIndex.mergeBlocksToFile();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
