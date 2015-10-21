@@ -30,7 +30,7 @@ public class CompressionIndexBuilder {
 			    		String currentLine;
 			    		
 			    		while ((currentLine = br.readLine()) != null) {
-							String[] words = currentLine.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegex);
+			    			String[] words = currentLine.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split("[^\\p{L}\\p{Nd}]+");
 							
 							for (String word: words) {
 								entries.add(new Entry(word, docID));
