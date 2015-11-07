@@ -116,12 +116,15 @@ public class SpimiIndexBuilder {
         BufferedWriter br = new BufferedWriter(new FileWriter("result.dictionary"));
 		PrintWriter out = new PrintWriter(br);
 		
+		// for each block
 		while (bufferedReaders.size() > 0) {
+			// store index of block with smallest lexicographically term
             MyArray<Integer> smallestTermBlockIDs = new MyArray<>();
 
             smallestTermBlockIDs.add(0);
             String smallestWord = tmpEntries.get(0).getTerm();
 
+            // finding next smallest term and retrieving it's posting list
             for (int i = 1; i < tmpEntries.size(); i++) {
                 String currWord = tmpEntries.get(i).getTerm();
                 if (currWord.compareTo(smallestWord) < 0) {
@@ -129,6 +132,7 @@ public class SpimiIndexBuilder {
                     smallestTermBlockIDs.add(i);
                     smallestWord = currWord;
                 } else if (currWord.compareTo(smallestWord) == 0) {
+                	// if equal words on same position in both blocks
                     smallestTermBlockIDs.add(i);
                 }
             }
@@ -143,7 +147,7 @@ public class SpimiIndexBuilder {
                 mergedPostingList = Utils.union(mergedPostingList, tmpEntries.get(blockID).getPostingsList());
 
                 // preparing next term
-                // if no next term (end of file - remove buffer
+                // if no next term (end of file) - remove buffer
                 String nextIndexEntry = bufferedReaders.get(blockID).readLine();
                 if (nextIndexEntry == null) {
                 	tmpEntries.remove(blockID);
@@ -204,12 +208,10 @@ public class SpimiIndexBuilder {
 									}
 								}
 							}
-							
-							
 						}
 			    		
 			    		br.close();
-					} catch (IOException e) {
+			    	} catch (IOException e) {
 						e.printStackTrace();
 					}
 			    }

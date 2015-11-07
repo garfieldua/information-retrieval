@@ -34,36 +34,44 @@ import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexEntry;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordEntry;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexBuilder;
 import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexSearch;
+import com.ukma.davydenko.indexbuilder.zonal.ZonalEntry;
+import com.ukma.davydenko.indexbuilder.zonal.ZonalIndexBuilder;
+import com.ukma.davydenko.indexbuilder.zonal.ZonalIndexEntry;
 
 public class Main {
 	
 	private static String folderName = "test";
+	private static String epubFolderName = "books_epub";
 	
 	public static void main(String[] args) {
+		// ZONAL INDEX
+		MyArray<ZonalEntry> zonalEntries = ZonalIndexBuilder.processEntries(epubFolderName);
+		MyArray<ZonalIndexEntry> zonalIndex = ZonalIndexBuilder.buildIndex(zonalEntries);
+		
 		// COMPRESSION
-		MyArray<Entry> entries = CompressionIndexBuilder.processEntries(folderName);
-		CompressionIndex index = null;
-		
-		try {
-			index = CompressionIndexBuilder.buildIndex(entries);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		// SPIMI
-		long startTime = System.currentTimeMillis();
-
-		SpimiIndexBuilder spIndex = new SpimiIndexBuilder(folderName, "index_blocks");
-		spIndex.buildSpimiIndex();
-		//spIndex.printDocMapping();
-		try {
-			spIndex.mergeBlocksToFile();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		long stopTime = System.currentTimeMillis();
-	    long elapsedTime = stopTime - startTime;
-	    System.out.println("SPIMI index building took " + elapsedTime + " ms");
+//		MyArray<Entry> entries = CompressionIndexBuilder.processEntries(folderName);
+//		CompressionIndex index = null;
+//		
+//		try {
+//			index = CompressionIndexBuilder.buildIndex(entries);
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		}
+//		
+//		// SPIMI
+//		long startTime = System.currentTimeMillis();
+//
+//		SpimiIndexBuilder spIndex = new SpimiIndexBuilder(folderName, "index_blocks");
+//		spIndex.buildSpimiIndex();
+//		//spIndex.printDocMapping();
+//		try {
+//			spIndex.mergeBlocksToFile();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		long stopTime = System.currentTimeMillis();
+//	    long elapsedTime = stopTime - startTime;
+//	    System.out.println("SPIMI index building took " + elapsedTime + " ms");
 		
 		// ARRAY TO TXT PROCESSING
 //		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
