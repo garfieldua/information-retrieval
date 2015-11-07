@@ -181,6 +181,11 @@ public class ZonalIndexSearch {
     	for (int i = 0; i < docIDs.size(); ++i) {
     		
     		double docScore = 0;
+    		boolean[] areaHit = new boolean [ZonalEnum.values().length];
+    		for (int j = 0; j < areaHit.length; ++j) {
+    			areaHit[j] = false;
+    		}
+    		
     		for (int j = 0; j < terms.length; ++j) {
     
     			MyArray<ZonalIndexElem> zonals = index.get(binarySearch(terms[j])).getZonalPostingsList();
@@ -190,19 +195,21 @@ public class ZonalIndexSearch {
     					// counting here
     					MyArray<ZonalEnum> zonalArray = zonals.get(k).getZones();
     					for (int l = 0; l < zonalArray.size(); ++l) {
-    						docScore += zonalArray.get(l).getZoneWeight();
+    						if (areaHit[zonalArray.get(l).ordinal()] == false) {
+    							docScore += zonalArray.get(l).getZoneWeight();
+    							areaHit[zonalArray.get(l).ordinal()] = true;
+    						}
     					}
     					
-    					System.out.println(new Integer(docIDs.get(i)).toString() + ':' + zonals.get(k).getZones());
+    					//System.out.println(new Integer(docIDs.get(i)).toString() + ':' + zonals.get(k).getZones());
     				}
     			}
     			
     		}
-    		scores.add(new ZonalScore(docIDs.get(i), docScore/terms.length));
+    		scores.add(new ZonalScore(docIDs.get(i), docScore));
     	}
     	
     	Arrays.sort(scores.getRawArray(), 0, scores.size());
-    	System.out.println(scores);
     	return scores;
     }
     
@@ -225,11 +232,12 @@ public class ZonalIndexSearch {
 					//System.out.println("postfix = " + postfix);
 					
 					// query response
-					System.out.println(computePostfix(postfix));
-					getScores(terms, computePostfix(postfix));
+					//System.out.println(computePostfix(postfix));
+					MyArray<ZonalScore> scores = getScores(terms, computePostfix(postfix));
+					System.out.println(scores);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				System.out.println("Invalid expression or no result");
 			}
 		} while (!quit);
