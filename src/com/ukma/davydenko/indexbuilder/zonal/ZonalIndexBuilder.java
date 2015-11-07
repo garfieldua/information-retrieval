@@ -1,22 +1,16 @@
 package com.ukma.davydenko.indexbuilder.zonal;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-
 import java.util.HashMap;
 import java.util.Map;
 
 import com.ukma.davydenko.indexbuilder.data.MyArray;
 import com.ukma.davydenko.utils.Consts;
-
-
 
 import ebook.EBook;
 import ebook.parser.InstantParser;
@@ -45,6 +39,7 @@ public class ZonalIndexBuilder {
 			if (entries.get(i).getTerm().equals(currTerm)) {
 				if (entries.get(i).getDocID() == currDocId) {
 					// adding new zone to ZonalIndexElem
+					if (!indexElem.getZones().contains(entries.get(i).getZone()))
 					indexElem.getZones().add(entries.get(i).getZone());
 				} else {
 					// saving last processed
@@ -97,8 +92,8 @@ public class ZonalIndexBuilder {
 						ArrayList<ebook.Person> authors = ebook.authors;
 						
 						for (ebook.Person author: authors) {
-							entries.add(new ZonalEntry(author.firstName, DOC_ID, ZonalEnum.AUTHOR));
-							entries.add(new ZonalEntry(author.lastName, DOC_ID, ZonalEnum.AUTHOR));
+							entries.add(new ZonalEntry(author.firstName.toLowerCase(), DOC_ID, ZonalEnum.AUTHOR));
+							entries.add(new ZonalEntry(author.lastName.toLowerCase(), DOC_ID, ZonalEnum.AUTHOR));
 						}
 						
 						String[] titleWords = ebook.title.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split("[^\\p{L}\\p{Nd}]+");

@@ -37,6 +37,7 @@ import com.ukma.davydenko.indexbuilder.twoword.BiwordIndexSearch;
 import com.ukma.davydenko.indexbuilder.zonal.ZonalEntry;
 import com.ukma.davydenko.indexbuilder.zonal.ZonalIndexBuilder;
 import com.ukma.davydenko.indexbuilder.zonal.ZonalIndexEntry;
+import com.ukma.davydenko.indexbuilder.zonal.ZonalIndexSearch;
 
 public class Main {
 	
@@ -47,6 +48,9 @@ public class Main {
 		// ZONAL INDEX
 		MyArray<ZonalEntry> zonalEntries = ZonalIndexBuilder.processEntries(epubFolderName);
 		MyArray<ZonalIndexEntry> zonalIndex = ZonalIndexBuilder.buildIndex(zonalEntries);
+		
+		ZonalIndexSearch zonalSearch = new ZonalIndexSearch(zonalIndex);
+		zonalSearch.startZonalIndexSearch();
 		
 		// COMPRESSION
 //		MyArray<Entry> entries = CompressionIndexBuilder.processEntries(folderName);
