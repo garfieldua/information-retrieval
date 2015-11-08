@@ -2,12 +2,14 @@ package com.ukma.davydenko.indexbuilder.main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 
+import com.ukma.davydenko.indexbuilder.cluster.ClusterBuilder;
 import com.ukma.davydenko.indexbuilder.compression.CompressionIndex;
 import com.ukma.davydenko.indexbuilder.compression.CompressionIndexBuilder;
 import com.ukma.davydenko.indexbuilder.data.MyArray;
@@ -45,13 +47,32 @@ public class Main {
 	private static String epubFolderName = "books_epub";
 	
 	public static void main(String[] args) {
-		// ZONAL INDEX
-		MyArray<ZonalEntry> zonalEntries = ZonalIndexBuilder.processEntries(epubFolderName);
-		MyArray<ZonalIndexEntry> zonalIndex = ZonalIndexBuilder.buildIndex(zonalEntries);
-		System.out.println(ZonalIndexBuilder.getDocMapping());
+		// CLUSTERING
+		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
+		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
+		System.out.println(IndexBuilder.getDocMapping());
 		
-		ZonalIndexSearch zonalSearch = new ZonalIndexSearch(zonalIndex);
-		zonalSearch.startZonalIndexSearch();
+		ClusterBuilder clusterBuilder = new ClusterBuilder(index, entries, IndexBuilder.getMaxDocId());
+		
+		HashMap<Integer, List<Integer>> clusters = clusterBuilder.clusterize();
+		for (java.util.Map.Entry<Integer, List<Integer>> entry : clusters.entrySet()) {
+			Integer leadDocID = entry.getKey();
+			List<Integer> followersList = entry.getValue();
+			
+			System.out.println(leadDocID + " : " + followersList);
+		}
+		
+//		for (int i = 0; i < index.size(); ++i) {
+//			System.out.println(index.get(i).getTerm() + ':' + index.get(i).getFrequency());
+//		}
+		
+		// ZONAL INDEX
+//		MyArray<ZonalEntry> zonalEntries = ZonalIndexBuilder.processEntries(epubFolderName);
+//		MyArray<ZonalIndexEntry> zonalIndex = ZonalIndexBuilder.buildIndex(zonalEntries);
+//		System.out.println(ZonalIndexBuilder.getDocMapping());
+//		
+//		ZonalIndexSearch zonalSearch = new ZonalIndexSearch(zonalIndex);
+//		zonalSearch.startZonalIndexSearch();
 		
 		// COMPRESSION
 //		MyArray<Entry> entries = CompressionIndexBuilder.processEntries(folderName);

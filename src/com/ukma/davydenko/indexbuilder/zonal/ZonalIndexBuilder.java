@@ -18,10 +18,10 @@ import ebook.parser.Parser;
 
 public class ZonalIndexBuilder {
 	
-	private static Map<String, Integer> docMapping = new HashMap<String, Integer>();
+	private static Map<Integer, String> docMapping = new HashMap<Integer, String>();
 	private static int DOC_ID = 0;
 	
-	public static Map<String, Integer> getDocMapping() {
+	public static Map<Integer, String> getDocMapping() {
 		return docMapping;
 	}
 
@@ -85,7 +85,7 @@ public class ZonalIndexBuilder {
 		try {
 			Files.walk(Paths.get(new File(pathName).getAbsolutePath())).forEach(filePath -> {
 				if (Files.isRegularFile(filePath)) {
-					docMapping.put(filePath.getFileName().toString(), ++DOC_ID);
+					docMapping.put(++DOC_ID, filePath.getFileName().toString());
 					
 					EBook ebook = parser.parse(filePath.toString());
 					if (ebook.isOk) {

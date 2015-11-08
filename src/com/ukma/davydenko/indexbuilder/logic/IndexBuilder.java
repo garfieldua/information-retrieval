@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -25,6 +26,17 @@ import com.ukma.davydenko.indexbuilder.entities.IndexEntry;
 import com.ukma.davydenko.indexbuilder.entities.MatrixEntry;
 
 public class IndexBuilder {
+	private static Map<Integer, String> docMapping = new HashMap<Integer, String>();
+	private static int DOC_ID = -1;
+	
+	public static Map<Integer, String> getDocMapping() {
+		return docMapping;
+	}
+	
+	public static int getMaxDocId () {
+		return DOC_ID;
+	}
+	
 	public static MyArray<IndexEntry> buildIndex(MyArray<Entry> entries) {
 		MyArray<IndexEntry> index = new MyArray<>();
 		
@@ -136,7 +148,8 @@ public class IndexBuilder {
 		try {
 			Files.walk(Paths.get(new File(pathName).getAbsolutePath())).forEach(filePath -> {
 			    if (Files.isRegularFile(filePath)) {
-			    	int docID = Integer.parseInt(filePath.getFileName().toString().replaceFirst("[.][^.]+$", ""));
+			    	docMapping.put(++DOC_ID, filePath.getFileName().toString());
+			    
 			    	
 			    	try {
 			    		BufferedReader br = new BufferedReader(new FileReader(filePath.toString()));
@@ -146,7 +159,7 @@ public class IndexBuilder {
 							String[] words = currentLine.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split(Consts.splitRegex);
 							
 							for (String word: words) {
-								entries.add(new Entry(word, docID));
+								entries.add(new Entry(word, DOC_ID));
 							}
 						}
 			    		
