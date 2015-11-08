@@ -48,6 +48,7 @@ public class Main {
 		// ZONAL INDEX
 		MyArray<ZonalEntry> zonalEntries = ZonalIndexBuilder.processEntries(epubFolderName);
 		MyArray<ZonalIndexEntry> zonalIndex = ZonalIndexBuilder.buildIndex(zonalEntries);
+		System.out.println(ZonalIndexBuilder.getDocMapping());
 		
 		ZonalIndexSearch zonalSearch = new ZonalIndexSearch(zonalIndex);
 		zonalSearch.startZonalIndexSearch();

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import com.ukma.davydenko.indexbuilder.data.MyArray;
+import com.ukma.davydenko.indexbuilder.zonal.ZonalEnum;
+import com.ukma.davydenko.indexbuilder.zonal.ZonalIndexElem;
 
 public class Utils {
 	public static MyArray<String> getTermsIntersection(MyArray<String> list1, MyArray<String> list2) {
@@ -27,6 +29,78 @@ public class Utils {
 		
 		return resultList;
 	}
+	
+	public static MyArray<ZonalEnum> unionZones(MyArray<ZonalEnum> zones1, MyArray<ZonalEnum> zones2) {
+		MyArray<ZonalEnum> resultZone = new MyArray<>();
+		
+		for (int i = 0; i < zones1.size(); ++i) {
+			resultZone.add(zones1.get(i));
+		}
+		
+		for (int i = 0; i < zones2.size(); ++i) {
+			resultZone.add(zones2.get(i));
+		}
+		
+		return resultZone;
+	}
+	
+	// for zonal posting lists
+	public static MyArray<ZonalIndexElem> zonalUnion(MyArray<ZonalIndexElem> list1, MyArray<ZonalIndexElem> list2) {
+    	MyArray<ZonalIndexElem> resultList = new MyArray<>();
+    	
+    	int i = 0;
+    	int j = 0;
+    	
+    	while (i < list1.size() && j < list2.size()) {
+    		if (list1.get(i).getDocID() == list2.get(j).getDocID()) {
+    			MyArray<ZonalEnum> unionZones = unionZones(list1.get(i).getZones(), list2.get(i).getZones());
+    			resultList.add(new ZonalIndexElem(list1.get(i).getDocID(), unionZones));
+    			++i;
+    			++j;
+    		} else if (list1.get(i).getDocID() < list2.get(j).getDocID()) {
+    			resultList.add(list1.get(i));
+    			++i;
+    		} else {
+    			resultList.add(list2.get(j));
+    			++j;
+    		}
+    	}
+    	
+    	// copy left-overs
+    	while (i < list1.size()) {
+    		resultList.add(list1.get(i));
+    		++i;
+    	}
+    	
+    	while (j < list2.size()) {
+    		resultList.add(list2.get(j));
+    		++j;
+    	}
+    	
+    	return resultList;
+    }
+	
+    public static MyArray<ZonalIndexElem> zonalIntersect(MyArray<ZonalIndexElem> list1, MyArray<ZonalIndexElem> list2) {
+    	MyArray<ZonalIndexElem> resultList = new MyArray<>();
+    	
+    	int i = 0;
+    	int j = 0;
+    	
+    	while (i < list1.size() && j < list2.size()) {
+    		if (list1.get(i).getDocID() == list2.get(j).getDocID()) {
+    			MyArray<ZonalEnum> unionZones = unionZones(list1.get(i).getZones(), list2.get(i).getZones());
+    			resultList.add(new ZonalIndexElem(list1.get(i).getDocID(), unionZones));
+    			++i;
+    			++j;
+    		} else if (list1.get(i).getDocID() < list2.get(j).getDocID()) {
+    			++i;
+    		} else {
+    			++j;
+    		}
+    	}
+    	
+    	return resultList;
+    }
 	
 	public static MyArray<Integer> union(MyArray<Integer> list1, MyArray<Integer> list2) {
     	MyArray<Integer> resultList = new MyArray<>();

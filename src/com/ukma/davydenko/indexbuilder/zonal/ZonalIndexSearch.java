@@ -2,10 +2,7 @@ package com.ukma.davydenko.indexbuilder.zonal;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EmptyStackException;
-import java.util.List;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
@@ -88,20 +85,20 @@ public class ZonalIndexSearch {
 		}
 	}
 
-	private MyArray<Integer> computePostfix(String postfix) throws Exception {
+	private MyArray<ZonalIndexElem> computePostfix(String postfix) throws Exception {
 
 		try {
-			Stack<MyArray<Integer>> stack = new Stack<>();
+			Stack<MyArray<ZonalIndexElem>> stack = new Stack<>();
 			StringTokenizer st = new StringTokenizer(postfix);
 			while (st.hasMoreTokens()) {
 				String token = st.nextToken();
 				if (token.equals("&") || token.equals("|") || token.equals("u~")) {
 					applyOperator(token, stack);
 				} else {	
-					stack.push(getPostingsId(index.get(binarySearch(token.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement)))));
+					stack.push(index.get(binarySearch(token.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement))).getZonalPostingsList());
 				}
 			}
-			MyArray<Integer> result = stack.pop();
+			MyArray<ZonalIndexElem> result = stack.pop();
 			if (!stack.isEmpty()) {
 				throw new Exception();
 			}
@@ -111,15 +108,15 @@ public class ZonalIndexSearch {
 		}
 	}
 
-	private void applyOperator(String operator, Stack<MyArray<Integer>> s) {
-		MyArray<Integer> op1 = s.pop();
+	private void applyOperator(String operator, Stack<MyArray<ZonalIndexElem>> s) {
+		MyArray<ZonalIndexElem> op1 = s.pop();
 
-			MyArray<Integer> op2 = s.pop();
-			MyArray<Integer> result = new MyArray<>();
+			MyArray<ZonalIndexElem> op2 = s.pop();
+			MyArray<ZonalIndexElem> result = new MyArray<>();
 			if (operator.equals("&")) {
-				result = Utils.intersect(op1, op2);
+				result = Utils.zonalIntersect(op1, op2);
 			} else if (operator.equals("|")) {
-				result = Utils.union(op1, op2);
+				result = Utils.zonalUnion(op1, op2);
 			} else {
 				throw new IllegalArgumentException();
 			}
@@ -137,7 +134,7 @@ public class ZonalIndexSearch {
 		}
 	}
 	
-	public MyArray<Integer> processQuery(String query) throws Exception {
+	public MyArray<ZonalIndexElem> processQuery(String query) throws Exception {
 		String postfix = toPostfix(query);
 		
 		return computePostfix(postfix);
@@ -173,43 +170,28 @@ public class ZonalIndexSearch {
 		}
 	}
     
-    public MyArray<ZonalScore> getScores(String[] terms, MyArray<Integer> docIDs) {
+    public MyArray<ZonalScore> getScores(MyArray<ZonalIndexElem> postingList) {
     	MyArray<ZonalScore> scores = new MyArray<>();
     	
-    	// for one term we get all needed lists
-    	
-    	for (int i = 0; i < docIDs.size(); ++i) {
-    		
+    	for (int i = 0; i < postingList.size(); ++i) {
     		double docScore = 0;
     		boolean[] areaHit = new boolean [ZonalEnum.values().length];
     		for (int j = 0; j < areaHit.length; ++j) {
     			areaHit[j] = false;
     		}
     		
-    		for (int j = 0; j < terms.length; ++j) {
-    
-    			MyArray<ZonalIndexElem> zonals = index.get(binarySearch(terms[j])).getZonalPostingsList();
-    			
-    			for (int k = 0; k < zonals.size(); ++k) {
-    				if (zonals.get(k).getDocID() == docIDs.get(i)) {
-    					// counting here
-    					MyArray<ZonalEnum> zonalArray = zonals.get(k).getZones();
-    					for (int l = 0; l < zonalArray.size(); ++l) {
-    						if (areaHit[zonalArray.get(l).ordinal()] == false) {
-    							docScore += zonalArray.get(l).getZoneWeight();
-    							areaHit[zonalArray.get(l).ordinal()] = true;
-    						}
-    					}
-    					
-    					//System.out.println(new Integer(docIDs.get(i)).toString() + ':' + zonals.get(k).getZones());
-    				}
-    			}
-    			
+    		MyArray<ZonalEnum> zonalArray = postingList.get(i).getZones();
+    		
+    		for (int j = 0; j < zonalArray.size(); ++j) {
+    			if (areaHit[zonalArray.get(j).ordinal()] == false) {
+					docScore += zonalArray.get(j).getZoneWeight();
+					areaHit[zonalArray.get(j).ordinal()] = true;
+				}
     		}
-    		scores.add(new ZonalScore(docIDs.get(i), docScore));
+    		
+    		scores.add(new ZonalScore(postingList.get(i).getDocID(), docScore));
     	}
     	
-    	Arrays.sort(scores.getRawArray(), 0, scores.size());
     	return scores;
     }
     
@@ -226,14 +208,10 @@ public class ZonalIndexSearch {
 				if (input.equals("q")) {
 					quit = true;
 				} else {
-					String[] terms = input.toLowerCase().replaceAll(Consts.punctRegex, Consts.punctReplacement).split("[^\\p{L}\\p{Nd}]+");
-					
 					String postfix = toPostfix(input);
 					//System.out.println("postfix = " + postfix);
-					
-					// query response
-					//System.out.println(computePostfix(postfix));
-					MyArray<ZonalScore> scores = getScores(terms, computePostfix(postfix));
+				
+					MyArray<ZonalScore> scores = getScores(computePostfix(postfix));
 					System.out.println(scores);
 				}
 			} catch (Exception e) {
