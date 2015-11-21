@@ -16,6 +16,10 @@ import com.ukma.davydenko.indexbuilder.data.MyArray;
 import com.ukma.davydenko.indexbuilder.entities.Entry;
 import com.ukma.davydenko.indexbuilder.entities.IndexEntry;
 import com.ukma.davydenko.indexbuilder.entities.MatrixEntry;
+import com.ukma.davydenko.indexbuilder.fb2parser.Fb2IndexBuilder;
+import com.ukma.davydenko.indexbuilder.fb2parser.Fb2ZonalEntry;
+import com.ukma.davydenko.indexbuilder.fb2parser.Fb2ZonalIndexEntry;
+import com.ukma.davydenko.indexbuilder.fb2parser.Fb2ZonalIndexSearch;
 import com.ukma.davydenko.indexbuilder.logic.IndexBuilder;
 import com.ukma.davydenko.indexbuilder.logic.QueryProcessor;
 import com.ukma.davydenko.indexbuilder.permuterm.PermutermIndexBuilder;
@@ -43,24 +47,33 @@ import com.ukma.davydenko.indexbuilder.zonal.ZonalIndexSearch;
 
 public class Main {
 	
-	private static String folderName = "test";
+	private static String folderName = "books";
 	private static String epubFolderName = "books_epub";
+	private static String fb2FolderName = "books_fb2";
 	
 	public static void main(String[] args) {
+		// FB2 PARSING
+		MyArray<Fb2ZonalEntry> fb2ZonalEntries = Fb2IndexBuilder.processEntries(fb2FolderName);
+		MyArray<Fb2ZonalIndexEntry> fb2ZonalIndex = Fb2IndexBuilder.buildIndex(fb2ZonalEntries);
+		System.out.println(Fb2IndexBuilder.getDocMapping());
+		
+		Fb2ZonalIndexSearch fb2ZonalSearch = new Fb2ZonalIndexSearch(fb2ZonalIndex);
+		fb2ZonalSearch.startZonalIndexSearch();
+		
 		// CLUSTERING
-		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
-		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
-		System.out.println(IndexBuilder.getDocMapping());
-		
-		ClusterBuilder clusterBuilder = new ClusterBuilder(index, entries, IndexBuilder.getMaxDocId());
-		
-		HashMap<Integer, List<Integer>> clusters = clusterBuilder.clusterize();
-		for (java.util.Map.Entry<Integer, List<Integer>> entry : clusters.entrySet()) {
-			Integer leadDocID = entry.getKey();
-			List<Integer> followersList = entry.getValue();
-			
-			System.out.println(leadDocID + " : " + followersList);
-		}
+//		MyArray<Entry> entries = IndexBuilder.processEntries(folderName);
+//		MyArray<IndexEntry> index = IndexBuilder.buildIndex(entries);
+//		System.out.println(IndexBuilder.getDocMapping());
+//		
+//		ClusterBuilder clusterBuilder = new ClusterBuilder(index, entries, IndexBuilder.getMaxDocId());
+//		
+//		HashMap<Integer, List<Integer>> clusters = clusterBuilder.clusterize();
+//		for (java.util.Map.Entry<Integer, List<Integer>> entry : clusters.entrySet()) {
+//			Integer leadDocID = entry.getKey();
+//			List<Integer> followersList = entry.getValue();
+//			
+//			System.out.println(leadDocID + " : " + followersList);
+//		}
 		
 //		for (int i = 0; i < index.size(); ++i) {
 //			System.out.println(index.get(i).getTerm() + ':' + index.get(i).getFrequency());

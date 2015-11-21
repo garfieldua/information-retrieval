@@ -15,4 +15,5 @@ public final class Consts {
 	public static final String splitRegexGram = "[^a-zA-Z\\$]+";
 	public static final String punctRegex = "\\p{Punct}";
 	public static final String punctReplacement = "";
+	public static final String universalRegex = "[^\\p{L}\\p{Nd}]+";
 }

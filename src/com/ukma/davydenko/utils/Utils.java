@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import com.ukma.davydenko.indexbuilder.data.MyArray;
+import com.ukma.davydenko.indexbuilder.fb2parser.Fb2ZonalEnum;
+import com.ukma.davydenko.indexbuilder.fb2parser.Fb2ZonalIndexElem;
 import com.ukma.davydenko.indexbuilder.zonal.ZonalEnum;
 import com.ukma.davydenko.indexbuilder.zonal.ZonalIndexElem;
 
@@ -55,6 +57,78 @@ public class Utils {
     		if (list1.get(i).getDocID() == list2.get(j).getDocID()) {
     			MyArray<ZonalEnum> unionZones = unionZones(list1.get(i).getZones(), list2.get(i).getZones());
     			resultList.add(new ZonalIndexElem(list1.get(i).getDocID(), unionZones));
+    			++i;
+    			++j;
+    		} else if (list1.get(i).getDocID() < list2.get(j).getDocID()) {
+    			resultList.add(list1.get(i));
+    			++i;
+    		} else {
+    			resultList.add(list2.get(j));
+    			++j;
+    		}
+    	}
+    	
+    	// copy left-overs
+    	while (i < list1.size()) {
+    		resultList.add(list1.get(i));
+    		++i;
+    	}
+    	
+    	while (j < list2.size()) {
+    		resultList.add(list2.get(j));
+    		++j;
+    	}
+    	
+    	return resultList;
+    }
+	
+    public static MyArray<Fb2ZonalIndexElem> fb2ZonalIntersect(MyArray<Fb2ZonalIndexElem> list1, MyArray<Fb2ZonalIndexElem> list2) {
+    	MyArray<Fb2ZonalIndexElem> resultList = new MyArray<>();
+    	
+    	int i = 0;
+    	int j = 0;
+    	
+    	while (i < list1.size() && j < list2.size()) {
+    		if (list1.get(i).getDocID() == list2.get(j).getDocID()) {
+    			MyArray<Fb2ZonalEnum> unionZones = fb2UnionZones(list1.get(i).getZones(), list2.get(i).getZones());
+    			resultList.add(new Fb2ZonalIndexElem(list1.get(i).getDocID(), unionZones));
+    			++i;
+    			++j;
+    		} else if (list1.get(i).getDocID() < list2.get(j).getDocID()) {
+    			++i;
+    		} else {
+    			++j;
+    		}
+    	}
+    	
+    	return resultList;
+    }
+	
+	public static MyArray<Fb2ZonalEnum> fb2UnionZones(MyArray<Fb2ZonalEnum> zones1, MyArray<Fb2ZonalEnum> zones2) {
+		MyArray<Fb2ZonalEnum> resultZone = new MyArray<>();
+		
+		for (int i = 0; i < zones1.size(); ++i) {
+			resultZone.add(zones1.get(i));
+		}
+		
+		for (int i = 0; i < zones2.size(); ++i) {
+			resultZone.add(zones2.get(i));
+		}
+		
+		return resultZone;
+	}
+	
+	// for zonal posting lists
+	public static MyArray<Fb2ZonalIndexElem> fb2ZonalUnion(MyArray<Fb2ZonalIndexElem> list1, MyArray<Fb2ZonalIndexElem> list2) {
+    	MyArray<Fb2ZonalIndexElem> resultList = new MyArray<>();
+    	
+    	int i = 0;
+    	int j = 0;
+    	
+    	while (i < list1.size() && j < list2.size()) {
+    		if (list1.get(i).getDocID() == list2.get(j).getDocID()) {
+    			MyArray<Fb2ZonalEnum> unionZones = fb2UnionZones(list1.get(i).getZones(), list2.get(i).getZones());
+    			resultList.add(new Fb2ZonalIndexElem(list1.get(i).getDocID(), unionZones));
     			++i;
     			++j;
     		} else if (list1.get(i).getDocID() < list2.get(j).getDocID()) {
